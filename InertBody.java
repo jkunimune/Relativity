@@ -9,7 +9,7 @@ public class InertBody extends Body { // a body of mass that drifts helplessly t
   }
   
   
-  public final String getName() {
-    return "asteroid.png";
+  public final String getFilePath() {
+    return "textures/asteroid.png";
   }
 }

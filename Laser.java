@@ -9,7 +9,7 @@ public class Laser extends Body { // a massless collection of photons
   }
   
   
-  public final String getName() {
-    return "laser.png";
+  public final String getFilePath() {
+    return "textures/laser.png";
   }
 }

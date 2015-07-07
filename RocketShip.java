@@ -9,7 +9,7 @@ public class RocketShip extends Body { // a body of mass that propels itself bas
   }
   
   
-  public final String getName() {
-    return "ship.png";
+  public final String getFilePath() {
+    return "textures/ship.png";
   }
 }
