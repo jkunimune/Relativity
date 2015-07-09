@@ -2,40 +2,7 @@
 <drjava version="drjava-20140826-r5761">
   <project autorefresh="false" build="" main="RelativityDriver" root="" work="">
     <createjar file=""/>
-    <source>
-      <file active="true" name="HolographicInterface.java" package="" timestamp="07-Jul-2015 18:45:11">
-        <select from="371" to="371"/>
-        <scroll column="282" row="0"/>
-      </file>
-      <file name="ShipControls.java" package="" timestamp="01-Jul-2015 10:34:41">
-        <select from="371" to="371"/>
-        <scroll column="282" row="0"/>
-      </file>
-      <file name="Body.java" package="" timestamp="04-Jul-2015 16:42:26">
-        <select from="371" to="371"/>
-        <scroll column="282" row="0"/>
-      </file>
-      <file name="InertBody.java" package="" timestamp="04-Jul-2015 16:43:35">
-        <select from="371" to="371"/>
-        <scroll column="282" row="0"/>
-      </file>
-      <file name="Laser.java" package="" timestamp="04-Jul-2015 16:43:56">
-        <select from="371" to="371"/>
-        <scroll column="282" row="0"/>
-      </file>
-      <file name="RocketShip.java" package="" timestamp="04-Jul-2015 16:44:06">
-        <select from="371" to="371"/>
-        <scroll column="282" row="0"/>
-      </file>
-      <file name="Space.java" package="" timestamp="07-Jul-2015 18:45:11">
-        <select from="371" to="371"/>
-        <scroll column="282" row="0"/>
-      </file>
-      <file name="RelativityDriver.java" package="" timestamp="07-Jul-2015 18:45:22">
-        <select from="371" to="371"/>
-        <scroll column="282" row="0"/>
-      </file>
-    </source>
+    <source/>
     <included/>
     <excluded/>
     <collapsed/>

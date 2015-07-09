@@ -7,56 +7,22 @@ import javax.swing.*;
 
 
 public class Space extends ArrayList<Body> { // a class that contains all the physical information of the universe
-  public static final int HEIGHT = 800;
-  public static final int WIDTH = 1280;
-  
   public static final double C = 1.0; // the speed of light to a stationary observer
   public static final double G = 1.0; // Newton's universal gravitation constant
   
   private Body me;
   
-  private JFrame frame;
-  private JPanel panel;
-  private Canvas canvs;
-  private BufferStrategy strat;
-  private ShipControls listener;
-  
   
   
   
   public Space() {
-    frame = new JFrame("Relativity");
-    panel = new JPanel();
-    canvs = new Canvas();
-    
-    panel.setLayout(null);
-    
-    canvs.setBounds(0, 0, WIDTH, HEIGHT);
-    canvs.setIgnoreRepaint(true);
-    canvs.addKeyListener(listener);
-    canvs.addMouseListener(listener);
-    canvs.setFocusable(true); // Sets the canvas to focussable (Necessary for a key listener).
-    
-    panel.add(canvs);
-    panel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
-    
-    frame.add(panel);
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.setSize(WIDTH, HEIGHT);
-    frame.setVisible(true);
-    frame.pack();
-    
-    canvs.createBufferStrategy(2);
-    strat = canvs.getBufferStrategy();
+    me = new RocketShip();
+    this.add(me);
   }
   
   
   
   
   public void update(double delT) {
-  }
-  
-  
-  public void display() {
   }
 }

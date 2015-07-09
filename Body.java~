@@ -1,4 +1,6 @@
 import java.awt.image.*;
+import java.io.*;
+import javax.imageio.*;
 
 
 
@@ -9,11 +11,16 @@ public abstract class Body { // a class for any physical object
   private double yPosition;
   private double xVelocity;
   private double yVelocity;
+  private BufferedImage sprite;
   
   
   
   
   public Body () {
+    try {
+      sprite = ImageIO.read(new File(getFilePath()));
+    } 
+    catch (IOException e) {}
   }
   
   
@@ -29,7 +36,7 @@ public abstract class Body { // a class for any physical object
   
   
   
-  public abstract String getName(); // for finding sprite files
+  public abstract String getFilePath(); // for finding sprite files
   
   
   public abstract double getAX(); // returns the x-component of the acceleration vector
@@ -74,6 +81,6 @@ public abstract class Body { // a class for any physical object
   
   
   public final BufferedImage getRawSprite() { // returns the sprite
-    return null; // implement later with File reading code
+    return sprite;
   }
 }
