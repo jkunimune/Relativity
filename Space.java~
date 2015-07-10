@@ -17,7 +17,7 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
   
   public Space() {
     me = new RocketShip();
-    this.add(me);
+    //this.add(me);
   }
   
   
