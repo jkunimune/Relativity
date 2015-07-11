@@ -35,11 +35,14 @@ public abstract class Body { // a class for any physical object
   
   
   
-  public void update(double delT) { // updates the object by delT milliseconds
+  public void update(double delT) { // updates the object by delT milliseconds and keeps them on screen
     xVelocity += getAX();
     yVelocity += getAY();
     xPosition += xVelocity;
     yPosition += yVelocity;
+    
+    xPosition %= Space.WIDTH;
+    yPosition %= Space.LENGTH;
   }
   
   
@@ -89,5 +92,15 @@ public abstract class Body { // a class for any physical object
   
   public final BufferedImage getSprite() { // returns the sprite
     return sprite;
+  }
+  
+  
+  public final int getScreenX() { // just the regular x, but shifted back
+    return (int)xPosition - Space.WIDTH/2;
+  }
+  
+  
+  public final int getScreenY() { // ditto for y
+    return (int)yPosition - Space.LENGTH/2;
   }
 }

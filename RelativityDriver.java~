@@ -4,6 +4,12 @@ public final class RelativityDriver {
     for (int i = 0; i < 10; i ++)
       universe.add(new InertBody(Math.random()*1180, Math.random()*700));
     HolographicInterface screen = new HolographicInterface(universe);
-    screen.display();
+    long time;
+    
+    while (true) {
+      time = System.currentTimeMillis();
+      screen.display();
+      universe.update(System.currentTimeMillis()-time);
+    }
   }
 }

@@ -11,15 +11,17 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
   public static final double s = 1000; // miliseconds
   public static final double C = 300000000*m/s; // the speed of light to a stationary observer
   public static final double G = 1.0; // Newton's universal gravitation constant
+  public static final int WIDTH = 4095; // the width of the universe, which is finite to prevent the computer from exploding
+  public static final int LENGTH = 4095; // the other dimension.
   
-  private Body me;
+  private RocketShip me;
   
   
   
   
   public Space() {
-    me = new RocketShip();
-    //this.add(me);
+    me = new RocketShip(WIDTH/2, LENGTH/2);
+    this.add(me);
   }
   
   
@@ -28,5 +30,10 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
   public void update(double delT) {
     for (Body b: this)
       b.update(delT);
+  }
+  
+  
+  public RocketShip getReference() {
+    return me;
   }
 }

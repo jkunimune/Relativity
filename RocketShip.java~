@@ -1,4 +1,11 @@
 public class RocketShip extends Body { // a body of mass that propels itself based on user input
+  public RocketShip() {
+    super(0, 0, 0, 0, 15);
+  }
+  
+  
+  
+  
   public final double getAX() {
     return 0;
   }

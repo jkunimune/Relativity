@@ -1,4 +1,5 @@
 import java.awt.image.*;
+import java.awt.geom.*;
 import java.io.*;
 import javax.imageio.*;
 
@@ -16,11 +17,19 @@ public abstract class Body { // a class for any physical object
   
   
   
-  public Body () {
+  public Body (double newX, double newY, double newVX, double newVY, double newM) {
     try {
       sprite = ImageIO.read(new File(getFilePath()));
-    } 
-    catch (IOException e) {}
+    }
+    catch (IOException e) {
+      System.out.println(e+": "+getFilePath());
+    }
+    
+    xPosition = newX;
+    yPosition = newY;
+    xVelocity = newVX;
+    yVelocity = newVY;
+    mass = newM;
   }
   
   
@@ -32,8 +41,6 @@ public abstract class Body { // a class for any physical object
     xPosition += xVelocity;
     yPosition += yVelocity;
   }
-  
-  
   
   
   public abstract String getFilePath(); // for finding sprite files
@@ -80,7 +87,7 @@ public abstract class Body { // a class for any physical object
   }
   
   
-  public final BufferedImage getRawSprite() { // returns the sprite
+  public final BufferedImage getSprite() { // returns the sprite
     return sprite;
   }
 }

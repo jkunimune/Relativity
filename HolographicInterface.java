@@ -22,7 +22,7 @@ public class HolographicInterface { // a class to render and display tactical in
   
   
   public HolographicInterface(Space wholeNewUniverse) {
-    final ShipControls listener = new ShipControls();
+    final ShipControls listener = new ShipControls(wholeNewUniverse.getReference());
     frame = new JFrame("Relativity");
     panel = new JPanel();
     canvs = new Canvas();
@@ -67,7 +67,7 @@ public class HolographicInterface { // a class to render and display tactical in
     g.drawImage(background, 0, 0, null); // Draws the background first and everything else on top of it
     
     for (Body b : universe) {
-      g.drawImage(b.getSprite(), (int)b.getX(), (int)b.getY(), null); // Draws all of the enemies currently alive.
+      g.drawImage(b.getSprite(), (int)b.getScreenX(), (int)b.getScreenY(), null); // Draws all of the enemies currently alive.
     }
     
     g.dispose();
