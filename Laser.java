@@ -6,27 +6,26 @@ public class Laser extends Body { // a massless collection of photons
   
   
   
+  @Override
   public final double getAX() {
     return 0;
   }
   
   
+  @Override
   public final double getAY() {
     return 0;
   }
   
   
+  @Override
   public final double getG() {
     return 1.0;
   }
   
   
-  public final double getGX() {
-    return 1.0;
-  }
-  
-  
-  public final double getGY() {
+  @Override
+  public final double getG(double x, double y) {
     return 1.0;
   }
   

@@ -44,9 +44,9 @@ public abstract class Body { // a class for any physical object
     yVelocity += getAY()*delT;
     xPosition += xVelocity*delT;
     yPosition += yVelocity*delT;
-    
-    xPosition = (xPosition + Space.WIDTH) % Space.WIDTH;
-    yPosition = (yPosition + Space.LENGTH) % Space.LENGTH;
+//    
+//    xPosition = (xPosition + Space.WIDTH) % Space.WIDTH;
+//    yPosition = (yPosition + Space.LENGTH) % Space.LENGTH;
   }
   
   
@@ -117,9 +117,9 @@ public abstract class Body { // a class for any physical object
     final double theta = Math.atan2(xVelocity-universe.getReference().getVX(), yVelocity-universe.getReference().getVY());
     
     contractor = new AffineTransform();
-    contractor.rotate(theta);
+    contractor.rotate(-theta, sprite.getWidth()/2, sprite.getHeight()/2);
     contractor.scale(1, 1/getG(universe.getReference().getVX(), universe.getReference().getVY()));
-    contractor.rotate(-theta);
+    contractor.rotate(theta, sprite.getWidth()/2, sprite.getHeight()/2);
     transOp = new AffineTransformOp(contractor, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
     
     try {
