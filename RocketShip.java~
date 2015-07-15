@@ -1,21 +1,71 @@
 public class RocketShip extends Body { // a body of mass that propels itself based on user input
-  public RocketShip() {
-    super(0, 0, 0, 0, 15);
+  private Throttle xThrottle = Throttle.STALLED;
+  private Throttle yThrottle = Throttle.STALLED;
+  private boolean firing = false;
+  private double cooldown = 0;
+  
+  
+  
+  
+  public RocketShip(double startX, double startY) {
+    super(startX, startY, 0, 0, 15);
   }
   
   
   
   
+  public void adjustThrottle(char direction, Throttle magnitude) { // causes the rocket to accelerate or decelerate
+    if (direction == 'x')
+      xThrottle = magnitude;
+    else if (direction == 'y')
+      yThrottle = magnitude;
+    else
+      System.out.println("Error: the direction passed to RocketShip.adjustThrottle should be either \'x\' or \'y\'.");
+  }
+  
+  
+  public boolean canShoot() {
+    return cooldown <= 0;
+  }
+  
+  
+  @Override
+  public void update(double delT) {
+    super.update(delT);
+    if (cooldown > 0)
+      cooldown -= delT;
+    else if (firing)
+      cooldown = 500;
+  }
+  
+  
+  @Override
   public final double getAX() {
-    return 0;
+    switch (xThrottle) {
+      case FORWARD:
+        return .0003;
+      case BACKWARD:
+        return -.0003;
+      default:
+        return 0;
+    }
   }
   
   
+  @Override
   public final double getAY() {
-    return 0;
+    switch (yThrottle) {
+      case FORWARD:
+        return -.0003;
+      case BACKWARD:
+        return .0003;
+      default:
+        return 0;
+    }
   }
   
   
+  @Override
   public final String getFilePath() {
     return "textures/ship.png";
   }

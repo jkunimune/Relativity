@@ -1,29 +1,33 @@
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 
 
 
 
 public class ShipControls implements MouseListener, KeyListener {
   private RocketShip ship;
+  private Space space;
   
   
   
   
-  public ShipControls (RocketShip newShip) {
+  public ShipControls (Space newSpace, RocketShip newShip) {
+    space = newSpace;
     ship = newShip;
   }
   
   
   
   
+  public final void mousePressed(MouseEvent e) {
+    ship.firing = true;
+  }
+  
+  
+  public final void mouseReleased(MouseEvent e) {
+    ship.firing = false;
+  }
+  
   public final void mouseClicked(MouseEvent e) {}
-  
-  public final void mousePressed(MouseEvent e) {}
-  
-  public final void mouseReleased(MouseEvent e) {}
   
   public final void mouseExited(MouseEvent e) {}
   

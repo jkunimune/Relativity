@@ -1,6 +1,6 @@
 public class InertBody extends Body { // a body of mass that drifts helplessly through space
-  public InertBody(double newX, double newY) {
-    super(newX, newY, Math.random()-.5, Math.random()-.5, 5);
+  public InertBody(double newX, double newY, double r, double th, Space s) {
+    super(newX, newY, r*Math.cos(th), r*Math.sin(th), 5, s);
   }
   
   

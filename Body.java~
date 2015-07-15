@@ -13,6 +13,8 @@ public abstract class Body { // a class for any physical object
   private double xVelocity;
   private double yVelocity;
   private BufferedImage sprite;
+  public AffineTransform contractor;
+  private AffineTransformOp transOp;
   
   
   
@@ -35,11 +37,14 @@ public abstract class Body { // a class for any physical object
   
   
   
-  public void update(double delT) { // updates the object by delT milliseconds
-    xVelocity += getAX();
-    yVelocity += getAY();
-    xPosition += xVelocity;
-    yPosition += yVelocity;
+  public void update(double delT) { // updates the object by delT milliseconds and keeps them on screen
+    xVelocity += getAX()*delT;
+    yVelocity += getAY()*delT;
+    xPosition += xVelocity*delT;
+    yPosition += yVelocity*delT;
+    
+    xPosition = (xPosition + Space.WIDTH) % Space.WIDTH;
+    yPosition = (yPosition + Space.LENGTH) % Space.LENGTH;
   }
   
   
@@ -87,7 +92,30 @@ public abstract class Body { // a class for any physical object
   }
   
   
+  public double getGX() { // gamma, but only in the X direction (sometimes helpful)
+    return 1.0 / Math.sqrt(1 - (xVelocity*xVelocity)/(Space.C*Space.C));
+  }
+  
+  
+  public double getGY() { // gamma, but only in the X direction (sometimes helpful)
+    return 1.0 / Math.sqrt(1 - (yVelocity*yVelocity)/(Space.C*Space.C));
+  }
+  
+  
   public final BufferedImage getSprite() { // returns the sprite
-    return sprite;
+    contractor = new AffineTransform();
+    contractor.scale(1/getGX(), 1/getGY());
+    transOp = new AffineTransformOp(contractor, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+    return transOp.filter(sprite, null);
+  }
+  
+  
+  public final int getScreenX() { // just the regular x, but shifted back
+    return (int)xPosition - Space.WIDTH/2;
+  }
+  
+  
+  public final int getScreenY() { // ditto for y
+    return (int)yPosition - Space.LENGTH/2;
   }
 }

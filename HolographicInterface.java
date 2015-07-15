@@ -8,8 +8,8 @@ import javax.imageio.*;
 
 
 public class HolographicInterface { // a class to render and display tactical information (overhead view)
-  public final int WIDTH = 1280;
-  public final int HEIGHT = 800;
+  public static final int WIDTH = 1280;
+  public static final int HEIGHT = 800;
   private JFrame frame;
   private JPanel panel;
   private Canvas canvs;
@@ -22,7 +22,7 @@ public class HolographicInterface { // a class to render and display tactical in
   
   
   public HolographicInterface(Space wholeNewUniverse) {
-    final ShipControls listener = new ShipControls(wholeNewUniverse.getReference());
+    final ShipControls listener = new ShipControls(wholeNewUniverse, wholeNewUniverse.getReference());
     frame = new JFrame("Relativity");
     panel = new JPanel();
     canvs = new Canvas();

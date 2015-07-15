@@ -12,12 +12,15 @@ public abstract class Body { // a class for any physical object
   private double yPosition;
   private double xVelocity;
   private double yVelocity;
+  private Space universe;
   private BufferedImage sprite;
+  public AffineTransform contractor;
+  private AffineTransformOp transOp;
   
   
   
   
-  public Body (double newX, double newY, double newVX, double newVY, double newM) {
+  public Body (double newX, double newY, double newVX, double newVY, double newM, Space newU) {
     try {
       sprite = ImageIO.read(new File(getFilePath()));
     }
@@ -30,19 +33,20 @@ public abstract class Body { // a class for any physical object
     xVelocity = newVX;
     yVelocity = newVY;
     mass = newM;
+    universe = newU;
   }
   
   
   
   
   public void update(double delT) { // updates the object by delT milliseconds and keeps them on screen
-    xVelocity += getAX();
-    yVelocity += getAY();
-    xPosition += xVelocity;
-    yPosition += yVelocity;
+    xVelocity += getAX()*delT;
+    yVelocity += getAY()*delT;
+    xPosition += xVelocity*delT;
+    yPosition += yVelocity*delT;
     
-    xPosition %= Space.WIDTH;
-    yPosition %= Space.LENGTH;
+    xPosition = (xPosition + Space.WIDTH) % Space.WIDTH;
+    yPosition = (yPosition + Space.LENGTH) % Space.LENGTH;
   }
   
   
@@ -53,6 +57,13 @@ public abstract class Body { // a class for any physical object
   
   
   public abstract double getAY(); // returns the y-component of the acceleration vector
+  
+  
+  public void shoot(Body projectile) { // causes the body to lose some momentum
+    universe.add(projectile);
+    xVelocity -= projectile.getVX()*projectile.getM()/this.mass/this.getG();
+    yVelocity -= projectile.getVY()*projectile.getM()/this.mass/this.getG();
+  }
   
   
   public final double getM() { // returns the mass
@@ -85,22 +96,53 @@ public abstract class Body { // a class for any physical object
   }
   
   
+  public Space getUniverse() { // returns the universe to which this object belongs
+    return universe;
+  }
+  
+  
   public double getG() { // returns the lorentz factor (G stands for Gamma)
     return 1.0 / Math.sqrt(1 - (xVelocity*xVelocity+yVelocity*yVelocity)/(Space.C*Space.C));
   }
   
   
+  public double getG(double xVelocity2, double yVelocity2) { // gamma, taken with respect to another velocity
+    final double refVX = xVelocity-xVelocity2;
+    final double refVY = yVelocity-yVelocity2;
+    return 1.0 / Math.sqrt(1 - (refVX*refVX+refVY*refVY)/(Space.C*Space.C));
+  }
+  
+  
   public final BufferedImage getSprite() { // returns the sprite
-    return sprite;
+    final double theta = Math.atan2(xVelocity-universe.getReference().getVX(), yVelocity-universe.getReference().getVY());
+    
+    contractor = new AffineTransform();
+    contractor.rotate(theta);
+    contractor.scale(1, 1/getG(universe.getReference().getVX(), universe.getReference().getVY()));
+    contractor.rotate(-theta);
+    transOp = new AffineTransformOp(contractor, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+    
+    try {
+      return transOp.filter(sprite, null);
+    }
+    catch (Exception e) {
+      try {
+        return ImageIO.read(new File("textures/null.png"));
+      }
+      catch (IOException f) {
+        System.out.println(e+": "+getFilePath());
+        return null;
+      }
+    }
   }
   
   
   public final int getScreenX() { // just the regular x, but shifted back
-    return (int)xPosition - Space.WIDTH/2;
+    return (int)(xPosition - universe.getReference().getX() + (HolographicInterface.WIDTH>>1) - (sprite.getWidth()>>1));
   }
   
   
   public final int getScreenY() { // ditto for y
-    return (int)yPosition - Space.LENGTH/2;
+    return (int)(yPosition - universe.getReference().getY() + (HolographicInterface.HEIGHT>>1) - (sprite.getHeight()>>1));
   }
 }
