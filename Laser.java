@@ -24,12 +24,6 @@ public class Laser extends Body { // a massless collection of photons
   }
   
   
-  @Override
-  public final double getG(double x, double y) {
-    return 1.0;
-  }
-  
-  
   public final String getFilePath() {
     return "textures/laser.png";
   }
