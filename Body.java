@@ -64,6 +64,18 @@ public abstract class Body { // a class for any physical object
     universe.add(projectile);
     xVelocity -= projectile.getVX()*projectile.getM()/this.mass/this.getG();
     yVelocity -= projectile.getVY()*projectile.getM()/this.mass/this.getG();
+    projectile.setVX(projectile.getVX()+xVelocity);
+    projectile.setVY(projectile.getVY()+yVelocity);
+  }
+  
+  
+  public void setVX(double val) {
+    xVelocity = val;
+  }
+  
+  
+  public void setVY(double val) {
+    yVelocity = val;
   }
   
   
@@ -106,6 +118,19 @@ public abstract class Body { // a class for any physical object
     final double refVX = xVelocity-universe.getReference().getVX();
     final double refVY = yVelocity-universe.getReference().getVY();
     return 1.0 / Math.sqrt(1 - (refVX*refVX+refVY*refVY)/(Space.C*Space.C));
+  }
+  
+  
+  public double getD() { // returns the proportionality constant determined using the doppler effect
+    final double rX = xPosition - universe.getReference().getX(); // the displacement vector x component
+    final double rY = yPosition - universe.getReference().getY(); // y version
+    if (rX == 0 && rY == 0)
+      return 1;
+    
+    final double vR = (rX*universe.getReference().getVX() + rY*universe.getReference().getVY()) / Math.sqrt(rX*rX + rY*rY); // the relative speed of the rocket
+    final double vO = (rX*xVelocity + rY*yVelocity) / Math.sqrt(rX*rX + rY*rY); // the relative speed of the object
+    
+    return (Space.C+vR)/(Space.C+vO);
   }
   
   
