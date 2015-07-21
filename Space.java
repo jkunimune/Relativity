@@ -34,7 +34,7 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
     procedurallyGenerate(delT);
     
     for (int i = 1; i < this.size(); i ++)
-      get(i).update(delT/get(i).getG()*get(i).getD());
+      get(i).update(delT/get(i).getG()/**get(i).getD()*/);
   }
   
   
@@ -50,7 +50,7 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
       }
       else { // if the player is horizontally in a new chunk
         final int dir = newChk.x-oldChk.x; // render approaching chunks and derender irrelevant chunks
-        derender(oldChk.x-dir, oldChk.x-dir, oldChk.y-1, oldChk.y+1);
+        derender(newChk.x-1, newChk.x+1, oldChk.y-1, oldChk.y+1);
         render(newChk.x+dir, newChk.y-1);
         render(newChk.x+dir, newChk.y);
         render(newChk.x+dir, newChk.y+1);
@@ -59,7 +59,7 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
     else {
       if (newChk.y != oldChk.y) { // if the player is vertically in a new chunk
         final int dir = newChk.y-oldChk.y; // render approaching chunks and derender irrelevant chunks
-        derender(oldChk.x-1, oldChk.x+1, oldChk.y-dir, oldChk.y-dir);
+        derender(newChk.x-1, newChk.x+1, newChk.y-1, newChk.y+1);
         render(newChk.x-1, newChk.y+dir);
         render(newChk.x, newChk.y+dir);
         render(newChk.x+1, newChk.y+dir);
@@ -72,14 +72,14 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
     for (int i = 0; i < RenderDist*RenderDist>>16; i ++)
       if (Math.random() < .5)
         this.add(new InertBody((x+Math.random())*RenderDist, (y+Math.random())*RenderDist,
-                               Math.exp(Math.random()*3-5), Math.random()*2*Math.PI, this));
+                               Math.exp(Math.random()*4-5), Math.random()*2*Math.PI, this));
   }
   
   
-  private void derender(int x1, int x2, int y1, int y2) { // deletes all objects in a range to save memory
+  private void derender(int x1, int x2, int y1, int y2) { // deletes all objects outside of a range 
     for (int i = this.size()-1; i >= 0; i --)
-      if ((int)Math.floor(get(i).getX()/RenderDist) >= x1 && (int)Math.floor(get(i).getX()/RenderDist) <= x2 &&
-          (int)Math.floor(get(i).getY()/RenderDist) >= y1 && (int)Math.floor(get(i).getY()/RenderDist) <= y2)
+      if ((int)Math.floor(get(i).getX()/RenderDist) < x1 || (int)Math.floor(get(i).getX()/RenderDist) > x2 ||
+          (int)Math.floor(get(i).getY()/RenderDist) < y1 || (int)Math.floor(get(i).getY()/RenderDist) > y2)
         remove(i);
   }
   
