@@ -34,7 +34,7 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
     procedurallyGenerate(delT);
     
     for (int i = 1; i < this.size(); i ++)
-      get(i).update(delT/get(i).getG()/**get(i).getD()*/);
+      get(i).update(delT/get(i).getG()*get(i).getD());
   }
   
   
@@ -71,8 +71,9 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
   private void render(int x, int y) { // generates an area and fills it with objects
     for (int i = 0; i < RenderDist*RenderDist>>16; i ++)
       if (Math.random() < .5)
-        this.add(new InertBody((x+Math.random())*RenderDist, (y+Math.random())*RenderDist,
-                               Math.exp(Math.random()*4-5), Math.random()*2*Math.PI, this));
+        this.add(new InertBody((x+Math.random())*RenderDist, (y+Math.random())*RenderDist, Math.log(1/Math.random()-1)/50,
+                               Math.random()*2*Math.PI, Math.log(1/Math.random()-1)/10000, Math.random(),
+                               this));
   }
   
   

@@ -1,6 +1,6 @@
 public class Laser extends Body { // a massless collection of photons
   public Laser(double newX, double newY, double newTheta, Space s) {
-    super(newX, newY, Space.C*Math.cos(newTheta), Space.C*Math.sin(newTheta), 1, s);
+    super(newX, newY, Space.C*Math.cos(newTheta), Space.C*Math.sin(newTheta), .01, 1, s);
   }
   
   

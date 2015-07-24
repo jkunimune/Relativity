@@ -13,15 +13,18 @@ public abstract class Body { // a class for any physical object
   private double yPosition;
   private double xVelocity;
   private double yVelocity;
+  private double aVelocity; // angular velocity
+  private double delTheta; // angular displacement since last update
   private Space universe;
   private BufferedImage sprite;
-  public AffineTransform contractor;
+  private AffineTransform transformer;
   private AffineTransformOp transOp;
+  public boolean toBeDestroyed;
   
   
   
   
-  public Body (double newX, double newY, double newVX, double newVY, double newM, Space newU) {
+  public Body(double newX, double newY, double newVX, double newVY, double newW, double newM, Space newU) {
     try {
       sprite = ImageIO.read(new File(getFilePath()));
     }
@@ -33,8 +36,32 @@ public abstract class Body { // a class for any physical object
     yPosition = newY;
     xVelocity = newVX;
     yVelocity = newVY;
+    aVelocity = newW;
     mass = newM;
     universe = newU;
+  }
+  
+  
+  public Body(double newX, double newY, double newVX, double newVY, double newW, double newM, Space newU, double scale) {
+    try {
+      sprite = ImageIO.read(new File(getFilePath()));
+    }
+    catch (IOException e) {
+      System.out.println(e+": "+getFilePath());
+    }
+    
+    xPosition = newX;
+    yPosition = newY;
+    xVelocity = newVX;
+    yVelocity = newVY;
+    aVelocity = newW;
+    mass = newM;
+    universe = newU;
+    
+    AffineTransform a = new AffineTransform();
+    a.scale(Math.cbrt(scale), Math.cbrt(scale));
+    AffineTransformOp o = new AffineTransformOp(a, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+    sprite = o.filter(sprite, null);
   }
   
   
@@ -45,9 +72,7 @@ public abstract class Body { // a class for any physical object
     yVelocity += getAY()*delT;
     xPosition += xVelocity*delT;
     yPosition += yVelocity*delT;
-//    
-//    xPosition = (xPosition + Space.WIDTH) % Space.WIDTH;
-//    yPosition = (yPosition + Space.LENGTH) % Space.LENGTH;
+    delTheta += aVelocity*delT;
   }
   
   
@@ -60,10 +85,10 @@ public abstract class Body { // a class for any physical object
   public abstract double getAY(); // returns the y-component of the acceleration vector
   
   
-  public void shoot(Body projectile) { // causes the body to lose some momentum
+  public void shoot(Body projectile) { // causes the body to lose some momentum and fire a projectile
     universe.add(projectile);
-    xVelocity -= projectile.getVX()*projectile.getM()/this.mass/this.getG();
-    yVelocity -= projectile.getVY()*projectile.getM()/this.mass/this.getG();
+    xVelocity -= projectile.getVX()*projectile.getM()/this.mass;
+    yVelocity -= projectile.getVY()*projectile.getM()/this.mass;
     projectile.setVX(projectile.getVX()+xVelocity);
     projectile.setVY(projectile.getVY()+yVelocity);
   }
@@ -109,6 +134,11 @@ public abstract class Body { // a class for any physical object
   }
   
   
+  public double getW() { // returns the angular velocity (W stands for Omega)
+    return aVelocity;
+  }
+  
+  
   public Space getUniverse() { // returns the universe to which this object belongs
     return universe;
   }
@@ -137,11 +167,11 @@ public abstract class Body { // a class for any physical object
   public final BufferedImage getSprite() { // returns the sprite
     final double theta = Math.atan2(xVelocity-universe.getReference().getVX(), yVelocity-universe.getReference().getVY());
     
-    contractor = new AffineTransform();
-    contractor.rotate(-theta, sprite.getWidth()/2, sprite.getHeight()/2);
-    contractor.scale(1, 1/getG());
-    contractor.rotate(theta, sprite.getWidth()/2, sprite.getHeight()/2);
-    transOp = new AffineTransformOp(contractor, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+    transformer = new AffineTransform();
+    transformer.rotate(-theta, sprite.getWidth()/2, sprite.getHeight()/2);
+    transformer.scale(1, 1/getG());
+    transformer.rotate(theta-delTheta, sprite.getWidth()/2, sprite.getHeight()/2);
+    transOp = new AffineTransformOp(transformer, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
     
     try {
       return transOp.filter(sprite, null);

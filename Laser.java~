@@ -8,13 +8,13 @@ public class Laser extends Body { // a massless collection of photons
   
   @Override
   public final double getAX() {
-    return 0;
+    return getUniverse().getReference().getAX(); // kind of cheaty, but keeps light moving at the correct speed
   }
   
   
   @Override
   public final double getAY() {
-    return 0;
+    return getUniverse().getReference().getAY();
   }
   
   
