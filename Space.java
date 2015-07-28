@@ -24,7 +24,8 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
     
     for (int j = -1; j <= 1; j ++)
       for (int k = -1; k <= 1; k ++)
-        render(j,k);
+        if (j!=0 || k!=0)
+          render(j,k);
   }
   
   
@@ -35,6 +36,23 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
     
     for (int i = 1; i < this.size(); i ++)
       get(i).update(delT/get(i).getG()*get(i).getD());
+    
+    for (int i = 0; i < this.size()-1; i ++) {
+      for (int h = i+1; h < this.size(); h ++) {
+        if (Math.abs(get(i).getX() - get(h).getX()) < (get(i).getWidth()+get(h).getWidth())/2 &&
+            Math.abs(get(i).getY() - get(h).getY()) < (get(i).getHeight()+get(h).getHeight())/2) {
+          if (get(i).canCollideWith(get(h))) { // only collide if the combination is right
+            if (get(i).collide()) {
+              remove(i);
+              h --;
+            }
+            if (get(h).collide()) {
+              remove(h);
+            }
+          }
+        }
+      }
+    }
   }
   
   

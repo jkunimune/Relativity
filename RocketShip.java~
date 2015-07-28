@@ -13,7 +13,7 @@ public class RocketShip extends Body { // a body of mass that propels itself bas
   
   
   public RocketShip(double startX, double startY, Space s) {
-    super(startX, startY, 0, 0, 60, s);
+    super(startX, startY, 0, 0, 0, 60, s);
     firing = false;
     cooldown = 0;
   }
@@ -33,6 +33,11 @@ public class RocketShip extends Body { // a body of mass that propels itself bas
   
   public boolean canShoot() {
     return cooldown <= 0;
+  }
+  
+  
+  public final void collide() {
+    System.out.println("You lose cause you suck. I'm a winner see my prize, you're a loser who sits and cries. HAHAHHA.");
   }
   
   

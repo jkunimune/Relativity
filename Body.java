@@ -19,7 +19,7 @@ public abstract class Body { // a class for any physical object
   private BufferedImage sprite;
   private AffineTransform transformer;
   private AffineTransformOp transOp;
-  public boolean toBeDestroyed;
+  public boolean toBeDeleted;
   
   
   
@@ -85,12 +85,36 @@ public abstract class Body { // a class for any physical object
   public abstract double getAY(); // returns the y-component of the acceleration vector
   
   
+  public abstract boolean collide(); // performs a collision and returns whether the object has been destroyed
+  
+  
+  public abstract boolean canCollideWith(Body b);
+  
+  
   public void shoot(Body projectile) { // causes the body to lose some momentum and fire a projectile
     universe.add(projectile);
     xVelocity -= projectile.getVX()*projectile.getM()/this.mass;
     yVelocity -= projectile.getVY()*projectile.getM()/this.mass;
     projectile.setVX(projectile.getVX()+xVelocity);
     projectile.setVY(projectile.getVY()+yVelocity);
+  }
+  
+  
+  public void eject(Body baby) { // causes the body to eject part of its mass in the form of a projectile
+    final double scale = (mass-baby.getM())/mass;
+    universe.add(baby);
+    mass -= baby.getM();
+    double delVX = baby.getVX();
+    double delVY = baby.getVY();
+    baby.setVX(delVX+this.xVelocity);
+    baby.setVY(baby.getVY()+this.yVelocity);
+    xVelocity -= delVX*baby.getM()/this.mass;
+    yVelocity -= delVY*baby.getM()/this.mass;
+    
+    AffineTransform a = new AffineTransform();
+    a.scale(Math.cbrt(scale), Math.cbrt(scale));
+    AffineTransformOp o = new AffineTransformOp(a, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+    sprite = o.filter(sprite, null);
   }
   
   
@@ -195,6 +219,16 @@ public abstract class Body { // a class for any physical object
   
   public final int getScreenY() { // ditto for y
     return (int)((yPosition - universe.getReference().getY() - (sprite.getHeight()>>1))/getG() + (HolographicInterface.HEIGHT>>1));
+  }
+  
+  
+  public final double getWidth() {
+    return sprite.getWidth();
+  }
+  
+  
+  public final double getHeight() {
+    return sprite.getHeight();
   }
   
  

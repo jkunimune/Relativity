@@ -22,9 +22,9 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
     me = new RocketShip(RenderDist>>1, RenderDist>>1, this);
     this.add(me);
     
-    for (int j = -1; j <= 1; j ++)
-      for (int k = -1; k <= 1; k ++)
-        render(j,k);
+//    for (int j = -1; j <= 1; j ++)
+//      for (int k = -1; k <= 1; k ++)
+//        render(j,k);
   }
   
   
@@ -35,6 +35,15 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
     
     for (int i = 1; i < this.size(); i ++)
       get(i).update(delT/get(i).getG()*get(i).getD());
+    
+    for (int i = 1; i < this.size()-1; i ++) {
+      for (int h = i+1; h < this.size(); h ++) {
+        if (Math.abs(get(i).getX() - get(h).getX()) < (get(i).getWidth()+get(h).getWidth())/2) {
+          get(i).collide(get(i));
+          get(h).collide();
+        }
+      }
+    }
   }
   
   
@@ -71,8 +80,8 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
   private void render(int x, int y) { // generates an area and fills it with objects
     for (int i = 0; i < RenderDist*RenderDist>>16; i ++)
       if (Math.random() < .5)
-        this.add(new InertBody((x+Math.random())*RenderDist, (y+Math.random())*RenderDist, Math.exp(Math.random()*4-5),
-                               Math.random()*2*Math.PI, Math.log(1/Math.random()-1)/3000, Math.pow(Math.random(),2),
+        this.add(new InertBody((x+Math.random())*RenderDist, (y+Math.random())*RenderDist, Math.log(1/Math.random()-1)/50,
+                               Math.random()*2*Math.PI, Math.log(1/Math.random()-1)/10000, Math.random(),
                                this));
   }
   

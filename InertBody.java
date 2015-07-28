@@ -22,6 +22,23 @@ public class InertBody extends Body { // a body of mass that drifts helplessly t
   }
   
   
+  @Override
+  public final boolean canCollideWith(Body b) {
+    return b.getClass().getName().equals("Laser") || b.getClass().getName().equals("RocketShip");
+  }
+  
+  
+  @Override
+  public final boolean collide() {
+    if (Math.random()*11 >= getM()) // smaller asteroids are often incinerated on impact
+      return true;
+    
+    eject(new InertBody(getX(), getY(), Math.log(1/Math.random()-1)/50, Math.random()*2*Math.PI,
+                         Math.log(1/Math.random()-1)/10000, getM()*Math.random()/10, getUniverse()));
+    return false;
+  }
+  
+  
   public final String getFilePath() {
     return "textures/debris"+(int)(Math.random()*3)+".png";
   }

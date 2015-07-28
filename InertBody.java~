@@ -5,8 +5,8 @@ import java.awt.image.*;
 
 
 public class InertBody extends Body { // a body of mass that drifts helplessly through space
-  public InertBody(double newX, double newY, double r, double th, double l, double newM, Space s) {
-    super(newX, newY, r*Math.cos(th), r*Math.sin(th), l/Math.pow(newM, 5.0/3.0), newM*10, s, newM);
+  public InertBody(double newX, double newY, double p, double th, double l, double m, Space s) {
+    super(newX, newY, p/m*Math.cos(th), p/m*Math.sin(th), l/Math.pow(m, 5.0/3.0), m*10, s, m);
   }
   
   
@@ -19,6 +19,12 @@ public class InertBody extends Body { // a body of mass that drifts helplessly t
   
   public final double getAY() {
     return 0;
+  }
+  
+  
+  public final void collide() {
+    eject(new InertBody(getX(), getY(), Math.log(1/Math.random()-1)/50, Math.random()*2*Math.PI,
+                         Math.log(1/Math.random()-1)/10000, Math.random(), getUniverse()));
   }
   
   

@@ -4,6 +4,8 @@ import java.awt.*;
 
 
 public class RocketShip extends Body { // a body of mass that propels itself based on user input
+  public final boolean canCollide = true;
+  
   private Throttle xThrottle = Throttle.STALLED;
   private Throttle yThrottle = Throttle.STALLED;
   public boolean firing;
@@ -33,6 +35,13 @@ public class RocketShip extends Body { // a body of mass that propels itself bas
   
   public boolean canShoot() {
     return cooldown <= 0;
+  }
+  
+  
+  @Override
+  public final boolean collide() {
+    System.out.println("You lose cause you suck. I'm a winner see my prize, you're a loser who sits and cries. HAHAHHA.");
+    return true;
   }
   
   
@@ -77,6 +86,12 @@ public class RocketShip extends Body { // a body of mass that propels itself bas
       default:
         return 0;
     }
+  }
+  
+  
+  @Override
+  public boolean canCollideWith(Body b) {
+    return b.getClass().getName().equals("InertBody");
   }
   
   
