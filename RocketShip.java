@@ -1,10 +1,15 @@
 import java.awt.*;
+import java.applet.*;
 
 
 
 
 public class RocketShip extends Body { // a body of mass that propels itself based on user input
   public final boolean canCollide = true;
+  
+  public AudioClip[] hitSound; // the sounds of the gaem
+  public AudioClip deathSound;
+  public AudioClip laserSound;
   
   private Throttle xThrottle = Throttle.STALLED;
   private Throttle yThrottle = Throttle.STALLED;
@@ -20,6 +25,7 @@ public class RocketShip extends Body { // a body of mass that propels itself bas
     firing = false;
     cooldown = 0;
     hitPoints = 16;
+    loadSound();
   }
   
 
@@ -57,6 +63,7 @@ public class RocketShip extends Body { // a body of mass that propels itself bas
   @Override
   public final boolean collide() {
     hitPoints --;
+    hitSound[(int)(Math.random()*hitSound.length)].play();
     return hitPoints <= 0;
   }
   
@@ -68,6 +75,7 @@ public class RocketShip extends Body { // a body of mass that propels itself bas
       cooldown -= delT;
     else if (firing) {
       shoot(new Laser(this.getX(), this.getY(), getAngle(), this.getUniverse()));
+      laserSound.play();
       cooldown += 400;
     } 
   }
@@ -114,5 +122,19 @@ public class RocketShip extends Body { // a body of mass that propels itself bas
   @Override
   public final String getFilePath() {
     return "textures/ship.png";
+  }
+  
+  
+  private final void loadSound() { // loads all sound files
+    try {
+      hitSound = new AudioClip[6];
+      for (int i = 0; i < hitSound.length; i ++)
+        hitSound[i] = Applet.newAudioClip(new java.net.URL("File:sounds/hit"+(i%3)+".wav"));
+      deathSound = Applet.newAudioClip(new java.net.URL("File:sounds/shipDeath.wav"));
+      laserSound = Applet.newAudioClip(new java.net.URL("File:sounds/laser.wav"));
+    }
+    catch (java.net.MalformedURLException error) {
+      System.err.println(error);
+    }
   }
 }
