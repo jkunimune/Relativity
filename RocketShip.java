@@ -10,6 +10,7 @@ public class RocketShip extends Body { // a body of mass that propels itself bas
   private Throttle yThrottle = Throttle.STALLED;
   public boolean firing;
   private double cooldown;
+  private int hitPoints;
   
   
   
@@ -18,6 +19,7 @@ public class RocketShip extends Body { // a body of mass that propels itself bas
     super(startX, startY, 0, 0, 0, 60, s);
     firing = false;
     cooldown = 0;
+    hitPoints = 16;
   }
   
 
@@ -38,10 +40,24 @@ public class RocketShip extends Body { // a body of mass that propels itself bas
   }
   
   
+  public int laserCharge() {
+    if (cooldown < 0)
+      return 8;
+    if (cooldown > 400)
+      return 0;
+    return 8 - (int)cooldown*8/400;
+  }
+  
+  
+  public int getHP() {
+    return hitPoints;
+  }
+  
+  
   @Override
   public final boolean collide() {
-    System.out.println("You lose cause you suck. I'm a winner see my prize, you're a loser who sits and cries. HAHAHHA.");
-    return true;
+    hitPoints --;
+    return hitPoints <= 0;
   }
   
   
@@ -52,7 +68,7 @@ public class RocketShip extends Body { // a body of mass that propels itself bas
       cooldown -= delT;
     else if (firing) {
       shoot(new Laser(this.getX(), this.getY(), getAngle(), this.getUniverse()));
-      cooldown += 300;
+      cooldown += 400;
     } 
   }
   

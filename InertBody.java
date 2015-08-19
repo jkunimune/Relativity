@@ -40,6 +40,6 @@ public class InertBody extends Body { // a body of mass that drifts helplessly t
   
   
   public final String getFilePath() {
-    return "textures/debris"+(int)(Math.random()*3)+".png";
+    return "textures/debris"+(int)(Math.random()*5)+".png";
   }
 }
