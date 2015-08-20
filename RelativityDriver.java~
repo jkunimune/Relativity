@@ -1,8 +1,6 @@
 public final class RelativityDriver {
   public static void main(String[] args) {
     Space universe = new Space();
-    for (int i = 0; i < 100; i ++)
-      universe.add(new Laser(Math.random()*Space.WIDTH, Math.random()*Space.LENGTH, 0));
     HolographicInterface screen = new HolographicInterface(universe);
     long time;
     

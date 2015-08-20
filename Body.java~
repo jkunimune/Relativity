@@ -85,7 +85,10 @@ public abstract class Body { // a class for any physical object
   public abstract double getAY(); // returns the y-component of the acceleration vector
   
   
-  public abstract void collide();
+  public abstract boolean collide(); // performs a collision and returns whether the object has been destroyed
+  
+  
+  public abstract boolean canCollideWith(Body b);
   
   
   public void shoot(Body projectile) { // causes the body to lose some momentum and fire a projectile
@@ -98,6 +101,7 @@ public abstract class Body { // a class for any physical object
   
   
   public void eject(Body baby) { // causes the body to eject part of its mass in the form of a projectile
+    final double scale = (mass-baby.getM())/mass;
     universe.add(baby);
     mass -= baby.getM();
     double delVX = baby.getVX();
@@ -106,6 +110,11 @@ public abstract class Body { // a class for any physical object
     baby.setVY(baby.getVY()+this.yVelocity);
     xVelocity -= delVX*baby.getM()/this.mass;
     yVelocity -= delVY*baby.getM()/this.mass;
+    
+    AffineTransform a = new AffineTransform();
+    a.scale(Math.cbrt(scale), Math.cbrt(scale));
+    AffineTransformOp o = new AffineTransformOp(a, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+    sprite = o.filter(sprite, null);
   }
   
   

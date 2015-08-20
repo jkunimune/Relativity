@@ -56,20 +56,21 @@ public class RocketShip extends Body { // a body of mass that propels itself bas
   
   
   public int getHP() {
-    return hitPoints;
+    if (hitPoints < 0)  return 0;
+    else                return hitPoints;
   }
   
   
   @Override
   public final boolean collide() {
-    hitPoints --;
+    hitPoints = (int)(hitPoints + Math.random()*2.5 - 3);
     hitSound[(int)(Math.random()*hitSound.length)].play();
     return hitPoints <= 0;
   }
   
   
   @Override
-  public void update(double delT) {
+  public boolean update(double delT) {
     super.update(delT);
     if (cooldown > 0)
       cooldown -= delT;
@@ -77,7 +78,8 @@ public class RocketShip extends Body { // a body of mass that propels itself bas
       shoot(new Laser(this.getX(), this.getY(), getAngle(), this.getUniverse()));
       laserSound.play();
       cooldown += 400;
-    } 
+    }
+    return false;
   }
   
   
@@ -115,7 +117,7 @@ public class RocketShip extends Body { // a body of mass that propels itself bas
   
   @Override
   public boolean canCollideWith(Body b) {
-    return b.getClass().getName().equals("InertBody");
+    return b.getClass().getName().equals("InertBody") || b.getClass().getName().equals("EscapePod");
   }
   
   

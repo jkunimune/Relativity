@@ -13,16 +13,22 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
   public static final double G = 1.0; // Newton's universal gravitation constant
   public static final int RenderDist = 1000; // the size of the square in which space debris is rendered
   
-  private RocketShip me;
+  private RocketShip me; // the ship
+  private int remainingLives; // the number of lives remaining. When this reaches 0, the game is over.
+  private double destination; // the distance the ship must travel to complete the level
+  private long timeCreated; // the time the universe was created
   
   
   
   
   public Space() {
-    me = new RocketShip(RenderDist>>1, RenderDist>>1, this);
+    me = new RocketShip(0, RenderDist>>1, this);
     this.add(me);
+    remainingLives = 3;
+    destination = 5000;
+    timeCreated = System.currentTimeMillis();
     
-    for (int j = -1; j <= 1; j ++)
+    for (int j = 0; j <= 1; j ++)
       for (int k = -1; k <= 1; k ++)
         if (j!=0 || k!=0)
           render(j,k);
@@ -105,5 +111,25 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
   
   public RocketShip getReference() {
     return me;
+  }
+  
+  
+  public int extraLives() {
+    return remainingLives - 1;
+  }
+  
+  
+  public double getProgress() {
+    return destination/me.getX();
+  }
+  
+  
+  public String getTime() {
+    String output = String.valueOf((System.currentTimeMillis()-timeCreated)/1000.0); // returns the age of this level in seconds
+    while (output.indexOf(".") < 3)
+      output = "0" + output;
+    while (output.length() < 7)
+      output += "0";
+    return output;
   }
 }

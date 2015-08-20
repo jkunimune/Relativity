@@ -4,10 +4,11 @@ public final class RelativityDriver {
     HolographicInterface screen = new HolographicInterface(universe);
     long time;
     
-    while (true) {
+    do {
       time = System.currentTimeMillis();
       screen.display();
-      universe.update(System.currentTimeMillis()-time);
-    }
+    } while (universe.update(System.currentTimeMillis()-time));
+    
+    System.out.println("Your score is "+universe.getScore());
   }
 }

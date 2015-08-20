@@ -1,0 +1,11 @@
+import java.awt.geom.*;
+import java.awt.image.*;
+
+
+
+
+public class EscapePod extends Body { // the goal at the end of each level
+  public InertBody(double newX, Space s) {
+    super(newX, newY, 0, 0, 0, 10, s);
+  }
+}

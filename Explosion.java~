@@ -1,0 +1,16 @@
+import java.awt.geom.*;
+import java.awt.image.*;
+
+
+
+
+public class Explosion extends Body { // a purely asthetic ball of fire
+  private double radius; // the constantly decreasing radius, between 0 and 1
+  
+  
+  
+  public InertBody(double newX, double newY, double newVX, double newVY, double newR, Space s) {
+    super(newX, newY, newVX, newVY, 0, 0, s, newR);
+    radius = newR;
+  }
+}

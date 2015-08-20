@@ -65,14 +65,39 @@ public abstract class Body { // a class for any physical object
   }
   
   
+  public Body(double newX, double newY, double newVX, double newVY, double newW, double newM, Space newU, double scale, double delTheta) {
+    try {
+      sprite = ImageIO.read(new File(getFilePath()));
+    }
+    catch (IOException e) {
+      System.out.println(e+": "+getFilePath());
+    }
+    
+    xPosition = newX;
+    yPosition = newY;
+    xVelocity = newVX;
+    yVelocity = newVY;
+    aVelocity = newW;
+    mass = newM;
+    universe = newU;
+    
+    AffineTransform a = new AffineTransform();
+    a.scale(Math.cbrt(scale), Math.cbrt(scale));
+    a.rotate(delTheta, sprite.getWidth()/2, sprite.getHeight()/2);
+    AffineTransformOp o = new AffineTransformOp(a, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+    sprite = o.filter(sprite, null);
+  }
   
   
-  public void update(double delT) { // updates the object by delT milliseconds and keeps them on screen
+  
+  
+  public boolean update(double delT) { // updates the object by delT milliseconds and keeps them on screen
     xVelocity += getAX()*delT;
     yVelocity += getAY()*delT;
     xPosition += xVelocity*delT;
     yPosition += yVelocity*delT;
     delTheta += aVelocity*delT;
+    return false; // returns whether it should be deleted
   }
   
   
@@ -88,7 +113,7 @@ public abstract class Body { // a class for any physical object
   public abstract boolean collide(); // performs a collision and returns whether the object has been destroyed
   
   
-  public abstract boolean canCollideWith(Body b);
+  public abstract boolean canCollideWith(Body b); // returns whether an object may interact with a given body
   
   
   public void shoot(Body projectile) { // causes the body to lose some momentum and fire a projectile
@@ -212,6 +237,25 @@ public abstract class Body { // a class for any physical object
   }
   
   
+  public final void shrinkSprite(double scale) {
+    transformer = new AffineTransform();
+    transformer.scale(scale, scale);
+    transOp = new AffineTransformOp(transformer, AffineTransformOp.TYPE_BILINEAR);
+    
+    try {
+      sprite = transOp.filter(sprite, null);
+    }
+    catch (Exception e) {
+      try {
+        sprite = ImageIO.read(new File("textures/null.png"));
+      }
+      catch (IOException f) {
+        System.out.println(e+": "+getFilePath());
+      }
+    }
+  }
+  
+  
   public final int getScreenX() { // just the regular x, but shifted back and space-contracted
     return (int)((xPosition - universe.getReference().getX() - (sprite.getWidth()>>1)) + (HolographicInterface.WIDTH>>1));
   }
@@ -238,7 +282,7 @@ public abstract class Body { // a class for any physical object
     final double vXRel = xVelocity - universe.getReference().getVX(); // and for velocity
     final double vYRel = yVelocity - universe.getReference().getVY();
     
-    xRel -= (yRel-xRel*vYRel/vXRel) / getG() / (1+Math.pow(vYRel/vXRel,2)); // length contracts
+    xRel -= (xRel-yRel*vXRel/vYRel) / getG() / (1+Math.pow(vXRel/vYRel,2)); // length contracts //NOTE TO SELF: This equasion is wrong. Fix it later.
     yRel -= (xRel-yRel*vXRel/vYRel) / getG() / (1+Math.pow(vXRel/vYRel,2)); // length contracts
     
     return new Point((int)(xRel+ (HolographicInterface.WIDTH - sprite.getWidth() >>1)),

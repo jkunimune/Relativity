@@ -12,11 +12,13 @@ public class InertBody extends Body { // a body of mass that drifts helplessly t
   
   
   
+  @Override
   public final double getAX() {
     return 0;
   }
   
   
+  @Override
   public final double getAY() {
     return 0;
   }
@@ -30,6 +32,8 @@ public class InertBody extends Body { // a body of mass that drifts helplessly t
   
   @Override
   public final boolean collide() {
+    shoot(new Explosion(getX(), getY(), getVX(), getVY(), Math.pow(getM()/10.0, 1/3.0), getUniverse()));
+    
     if (Math.random()*11 >= getM()) // smaller asteroids are often incinerated on impact
       return true;
     
@@ -39,6 +43,7 @@ public class InertBody extends Body { // a body of mass that drifts helplessly t
   }
   
   
+  @Override
   public final String getFilePath() {
     return "textures/debris"+(int)(Math.random()*5)+".png";
   }
