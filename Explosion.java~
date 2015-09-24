@@ -9,8 +9,49 @@ public class Explosion extends Body { // a purely asthetic ball of fire
   
   
   
-  public InertBody(double newX, double newY, double newVX, double newVY, double newR, Space s) {
-    super(newX, newY, newVX, newVY, 0, 0, s, newR);
+  public Explosion(double newX, double newY, double newVX, double newVY, double newR, Space s) {
+    super(newX, newY, newVX, newVY, 0, 0, s, newR, Math.random()*2*Math.PI);
     radius = newR;
+  }
+  
+  
+  
+  @Override
+  public final double getAX() {
+    return 0;
+  }
+  
+  
+  @Override
+  public final double getAY() {
+    return 0;
+  }
+  
+  
+  @Override
+  public final boolean canCollideWith(Body b) {
+    return false;
+  }
+  
+  
+  @Override
+  public final boolean collide() {
+    return false;
+  }
+  
+  
+  @Override
+  public final String getFilePath() {
+    return "textures/blast.png";
+  }
+  
+  
+  @Override
+  public final boolean update(double delT) {
+    super.update(delT);
+    radius -= delT/500;
+    if (radius <= 0)  return true;
+    shrinkSprite(radius/(radius+delT/500));
+    return false;
   }
 }

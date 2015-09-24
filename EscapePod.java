@@ -25,7 +25,8 @@ public class EscapePod extends Body { // the goal at the end of each level
   
   @Override
   public final boolean canCollideWith(Body b) {
-    return b.getClass().getName().equals("RocketShip");
+    //return b.getClass().getName().equals("RocketShip");
+    return false;
   }
   
   
@@ -38,8 +39,9 @@ public class EscapePod extends Body { // the goal at the end of each level
   @Override
   public final boolean update(double delT) {
     super.update(delT);
-    if (Math.sqrt(Math.pow(getUniverse().getReference().getX()-this.getX(),2)+Math.pow(getUniverse().getReference().getY()-this.getY(),2)) < 300)
+    if (getUniverse().gameState==State.RUNNING && Math.sqrt(Math.pow(getUniverse().getReference().getX()-this.getX(),2)+Math.pow(getUniverse().getReference().getY()-this.getY(),2)) < 300)
       getUniverse().triggerVictory();
+    getUniverse().getReference().setTarget(this);
     return false;
   }
   

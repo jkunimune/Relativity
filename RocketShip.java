@@ -5,8 +5,6 @@ import java.applet.*;
 
 
 public class RocketShip extends Body { // a body of mass that propels itself based on user input
-  public final boolean canCollide = true;
-  
   public AudioClip[] hitSound; // the sounds of the gaem
   public AudioClip deathSound;
   public AudioClip laserSound;
@@ -16,6 +14,7 @@ public class RocketShip extends Body { // a body of mass that propels itself bas
   public boolean firing;
   private double cooldown;
   private int hitPoints;
+  private EscapePod target;
   
   
   
@@ -61,6 +60,17 @@ public class RocketShip extends Body { // a body of mass that propels itself bas
   }
   
   
+  public void die() {
+    shoot(new Explosion(getX(), getY(), Math.pow(getM()/10.0, 1/3.0), getUniverse()));
+    deathSound.play();
+  }
+  
+  
+  public void setTarget(EscapePod pod) {
+    target = pod;
+  }
+  
+  
   @Override
   public final boolean collide() {
     hitPoints = (int)(hitPoints + Math.random()*2.5 - 3);
@@ -91,11 +101,24 @@ public class RocketShip extends Body { // a body of mass that propels itself bas
   
   @Override
   public final double getAX() {
-    switch (xThrottle) {
-      case FORWARD:
-        return .0003;
-      case BACKWARD:
-        return -.0003;
+    switch (getUniverse().gameState) {
+      case RUNNING:
+        switch (xThrottle) {
+          case FORWARD:
+            return .0003; // the ship engine power
+          case BACKWARD:
+            return -.0003;
+          default:
+            return 0;
+        }
+        
+      case VICTORIOUS:
+        final double t = getUniverse().timeRemaining();
+        return 8*getVX()/t - 18*(getX()-target.getX())/(t*t);
+        
+      case DEAD: // dead ships don't fly
+        return 0;
+        
       default:
         return 0;
     }
@@ -104,11 +127,24 @@ public class RocketShip extends Body { // a body of mass that propels itself bas
   
   @Override
   public final double getAY() {
-    switch (yThrottle) {
-      case FORWARD:
-        return -.0003;
-      case BACKWARD:
-        return .0003;
+    switch (getUniverse().gameState) {
+      case RUNNING:
+        switch (yThrottle) {
+          case FORWARD:
+            return -.0003; // the ship engine power
+          case BACKWARD:
+            return .0003;
+          default:
+            return 0;
+        }
+        
+      case VICTORIOUS:
+        final double t = getUniverse().timeRemaining();
+        return 8*getVY()/t - 18*(getY()-target.getY())/(t*t);
+        
+      case DEAD: // dead ships don't fly
+        return 0;
+        
       default:
         return 0;
     }
@@ -117,7 +153,7 @@ public class RocketShip extends Body { // a body of mass that propels itself bas
   
   @Override
   public boolean canCollideWith(Body b) {
-    return b.getClass().getName().equals("InertBody") || b.getClass().getName().equals("EscapePod");
+    return b.getClass().getName().equals("InertBody");
   }
   
   

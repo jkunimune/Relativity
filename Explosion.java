@@ -9,8 +9,8 @@ public class Explosion extends Body { // a purely asthetic ball of fire
   
   
   
-  public Explosion(double newX, double newY, double newVX, double newVY, double newR, Space s) {
-    super(newX, newY, newVX, newVY, 0, 0, s, newR, Math.random()*2*Math.PI);
+  public Explosion(double newX, double newY, double newR, Space s) {
+    super(newX, newY, 0, 0, 0, 0, s, newR, Math.random()*2*Math.PI);
     radius = newR;
   }
   
