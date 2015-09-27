@@ -283,8 +283,8 @@ public abstract class Body { // a class for any physical object
     final double vYRel = yVelocity - universe.getReference().getVY();
     
     if (xRel*xRel+yRel*yRel > 0) {
-      xRel -= (xRel-yRel*vXRel/vYRel) / getG() / (1+Math.pow(vXRel/vYRel,2)); // length contracts
-      yRel -= (yRel-xRel*vYRel/vXRel) / getG() / (1+Math.pow(vYRel/vXRel,2)); // length contracts
+      xRel = xRel + vXRel*(xRel*vXRel+yRel*vYRel)*(1/getG()-1)/(vXRel*vXRel+vYRel*vYRel); // length contracts
+      yRel = yRel + vYRel*(xRel*vXRel+yRel*vYRel)*(1/getG()-1)/(vXRel*vXRel+vYRel*vYRel); // length contracts
     }
     
     return new Point((int)(xRel+ (HolographicInterface.WIDTH - sprite.getWidth() >>1)),
