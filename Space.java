@@ -77,21 +77,25 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
     final Point newChk = new Point((int)Math.floor(me.getX()/RENDER_DISTANCE), (int)Math.floor(me.getY()/RENDER_DISTANCE));
     
     if (newChk.x != oldChk.x) {
-      if (me.getX() < destination) {
+      if (me.getX() < destination || newChk.x%2==0) {
         if (newChk.y != oldChk.y) { // if the player is diagonally in a new chunk
-          System.err.println("You got super lucky and broke the game because of it. Good job!");
-          while (true) {}
+          final int dirX = newChk.x-oldChk.x; // render approaching chunks and derender irrelevant chunks
+          final int dirY = newChk.y-oldChk.y;
+          render(newChk.x+dirX, newChk.y);
+          render(newChk.x, newChk.y+dirY);
+          render(newChk.x+dirX, newChk.y+dirY);
+          derender(newChk.x-1, newChk.x+1, newChk.y-1, newChk.y+1);
         }
         else { // if the player is horizontally in a new chunk
           final int dir = newChk.x-oldChk.x; // render approaching chunks and derender irrelevant chunks
-          derender(newChk.x-1, newChk.x+1, oldChk.y-1, oldChk.y+1);
+          derender(newChk.x-1, newChk.x+1, newChk.y-1, newChk.y+1);
           render(newChk.x+dir, newChk.y-1);
           render(newChk.x+dir, newChk.y);
           render(newChk.x+dir, newChk.y+1);
         }
       }
       else { // if the player has reached his/her destination, do not render normally
-        derender(newChk.x-1, newChk.x+1, oldChk.y-1, oldChk.y+1);
+        derender(newChk.x-1, newChk.x+1, newChk.y-1, newChk.y+1);
         add(new EscapePod(me.getX()+RENDER_DISTANCE, me.getY(), this));
       }
     }

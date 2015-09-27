@@ -60,7 +60,7 @@ public abstract class Body { // a class for any physical object
     
     AffineTransform a = new AffineTransform();
     a.scale(Math.cbrt(scale), Math.cbrt(scale));
-    AffineTransformOp o = new AffineTransformOp(a, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+    AffineTransformOp o = new AffineTransformOp(a, AffineTransformOp.TYPE_BILINEAR);
     sprite = o.filter(sprite, null);
   }
   
@@ -257,7 +257,7 @@ public abstract class Body { // a class for any physical object
   
   
   public final int getScreenX() { // just the regular x, but shifted back and space-contracted
-    return (int)((xPosition - universe.getReference().getX() - (sprite.getWidth()>>1)) + (HolographicInterface.WIDTH>>1));
+    return (int)((xPosition - universe.getReference().getX() - (sprite.getWidth()>>1))/getG() + (HolographicInterface.WIDTH>>1));
   }
   
   
@@ -282,8 +282,10 @@ public abstract class Body { // a class for any physical object
     final double vXRel = xVelocity - universe.getReference().getVX(); // and for velocity
     final double vYRel = yVelocity - universe.getReference().getVY();
     
-    xRel -= (xRel-yRel*vXRel/vYRel) / getG() / (1+Math.pow(vXRel/vYRel,2)); // length contracts //NOTE TO SELF: This equasion is wrong. Fix it later.
-    yRel -= (xRel-yRel*vXRel/vYRel) / getG() / (1+Math.pow(vXRel/vYRel,2)); // length contracts
+    if (xRel*xRel+yRel*yRel > 0) {
+      xRel -= (xRel-yRel*vXRel/vYRel) / getG() / (1+Math.pow(vXRel/vYRel,2)); // length contracts
+      yRel -= (yRel-xRel*vYRel/vXRel) / getG() / (1+Math.pow(vYRel/vXRel,2)); // length contracts
+    }
     
     return new Point((int)(xRel+ (HolographicInterface.WIDTH - sprite.getWidth() >>1)),
                      (int)(yRel+ (HolographicInterface.HEIGHT - sprite.getHeight() >>1)));

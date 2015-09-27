@@ -17,7 +17,8 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
   private int remainingLives; // the number of lives remaining. When this reaches 0, the game is over.
   private double destination; // the distance the ship must travel to complete the level
   private long timeCreated; // the time the universe was created
-  boolean won;
+  private long time2Kill; // the time the universe will be terminated
+  public State gameState; // whether the game is running or what
   
   
   
@@ -28,7 +29,8 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
     remainingLives = 3;
     destination = 5000;
     timeCreated = System.currentTimeMillis();
-    won = false;
+    time2Kill = 0;
+    gameState = State.RUNNING;
     
     for (int j = 0; j <= 1; j ++)
       for (int k = -1; k <= 1; k ++)
@@ -46,13 +48,10 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
       if (get(i).update(delT/get(i).getG()*get(i).getD()))
         remove(i);
     
-    if (won)  return false; // victory if the ship has found the pod
-    
     for (int i = 0; i < this.size()-1; i ++) {
       for (int h = i+1; h < this.size(); h ++) {
-        if (Math.abs(get(i).getX() - get(h).getX()) < (get(i).getWidth()+get(h).getWidth())/2 &&
-            Math.abs(get(i).getY() - get(h).getY()) < (get(i).getHeight()+get(h).getHeight())/2) {
-          if (get(i).canCollideWith(get(h))) { // only collide if the combination is right
+        if (Math.hypot(get(i).getX()-get(h).getX(),get(i).getY() - get(h).getY()) < (get(i).getWidth()+get(h).getWidth())/2) {
+          if (get(i).canCollideWith(get(h))) { // only collide if the combination is right (e.g. asteroids don't hit asteroisd because that would destroy the universe in a big ball of lag)
             if (get(i).collide()) {
               remove(i);
               h --;
@@ -65,12 +64,10 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
       }
     }
     
-    if (!this.contains(me)) {
-      me.deathSound.play();
-      System.out.println("You lose. I'm a winner see my prize! You're a loser who sits and cries. HAHAHA!");
-      return false; // death if the ship is gone
+    if (gameState == State.RUNNING && !this.contains(me)) {
+      triggerDeath();
     }
-    else  return true;
+    return gameState == State.RUNNING || System.currentTimeMillis() < time2Kill; // the game is still active when the state is running or we are in the ending animation
   }
   
   
@@ -153,13 +150,27 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
   
   
   public void triggerVictory() {
-    won = true;
+    gameState = State.VICTORIOUS;
     System.out.println("You win!");
+    time2Kill = System.currentTimeMillis()+3000; // end the game in 3 seconds
+  }
+  
+  
+  public void triggerDeath() {
+    System.out.println("You lose. I'm a winner see my prize! You're a loser who sits and cries. HAHAHA!");
+    gameState = State.DEAD; // death if the ship is gone
+    time2Kill = System.currentTimeMillis()+3000; // end the game in 3 seconds
+    me.die();
+  }
+  
+  
+  public long timeRemaining() { // the time remaining before the universe ends
+    return System.currentTimeMillis()-time2Kill;
   }
   
   
   public int getScore() { // returns the player's current score
-    if (won)  return (int)(destination*destination/(System.currentTimeMillis()-timeCreated));
+    if (gameState == State.VICTORIOUS)  return (int)(destination*destination/(System.currentTimeMillis()-timeCreated));
     else      return (int)(me.getX()*destination/(System.currentTimeMillis()-timeCreated)/2);
   }
 }
