@@ -220,7 +220,7 @@ public abstract class Body { // a class for any physical object
     transformer.rotate(-theta, sprite.getWidth()/2, sprite.getHeight()/2);
     transformer.scale(1, 1/getG());
     transformer.rotate(theta-delTheta, sprite.getWidth()/2, sprite.getHeight()/2);
-    transOp = new AffineTransformOp(transformer, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+    transOp = new AffineTransformOp(transformer, AffineTransformOp.TYPE_BILINEAR);
     
     try {
       return transOp.filter(sprite, null);
@@ -256,16 +256,6 @@ public abstract class Body { // a class for any physical object
   }
   
   
-  public final int getScreenX() { // just the regular x, but shifted back and space-contracted
-    return (int)((xPosition - universe.getReference().getX() - (sprite.getWidth()>>1))/getG() + (HolographicInterface.WIDTH>>1));
-  }
-  
-  
-  public final int getScreenY() { // ditto for y
-    return (int)((yPosition - universe.getReference().getY() - (sprite.getHeight()>>1))/getG() + (HolographicInterface.HEIGHT>>1));
-  }
-  
-  
   public final double getWidth() {
     return sprite.getWidth();
   }
@@ -289,5 +279,16 @@ public abstract class Body { // a class for any physical object
     
     return new Point((int)(xRel+ (HolographicInterface.WIDTH - sprite.getWidth() >>1)),
                      (int)(yRel+ (HolographicInterface.HEIGHT - sprite.getHeight() >>1)));
+  }
+  
+  
+  /* PRECONDITION: 0 <= dest < TAU or dest == NaN */
+  public final void aimToward(double dest) { // sets the angular velocity such that it is aimed toward this direction
+    double offset = dest-delTheta;
+    offset%=2*Math.PI;
+    if (offset < Math.PI && offset >= -Math.PI)
+      aVelocity = .0005*offset;
+    else
+      aVelocity = -.0005*offset;
   }
 }
