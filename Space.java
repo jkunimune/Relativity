@@ -52,11 +52,13 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
       for (int h = i+1; h < this.size(); h ++) {
         if (Math.hypot(get(i).getX()-get(h).getX(),get(i).getY() - get(h).getY()) < (get(i).getWidth()+get(h).getWidth())/2) {
           if (get(i).canCollideWith(get(h))) { // only collide if the combination is right (e.g. asteroids don't hit asteroisd because that would destroy the universe in a big ball of lag)
-            if (get(i).collide()) {
+            final Body a = get(i);
+            final Body b = get(h);
+            if (a.collideWith(b)) {
               remove(i);
               h --;
             }
-            if (get(h).collide()) {
+            if (b.collideWith(a)) {
               remove(h);
             }
           }
@@ -64,9 +66,11 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
       }
     }
     
-    if (gameState == State.RUNNING && !this.contains(me)) {
+    if (gameState == State.RUNNING && me.getV() > C) // you are lost at the speed of light
+      triggerWarpDeath();
+    if (gameState == State.RUNNING && !this.contains(me)) // you are dead without a ship
       triggerDeath();
-    }
+    
     return gameState == State.RUNNING || System.currentTimeMillis() < time2Kill; // the game is still active when the state is running or we are in the ending animation
   }
   
@@ -77,7 +81,7 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
     final Point newChk = new Point((int)Math.floor(me.getX()/RENDER_DISTANCE), (int)Math.floor(me.getY()/RENDER_DISTANCE));
     
     if (newChk.x != oldChk.x) {
-      if (me.getX() < destination || newChk.x%2==0) {
+      if (me.getX() < destination || newChk.x%3>0) {
         if (newChk.y != oldChk.y) { // if the player is diagonally in a new chunk
           final int dirX = newChk.x-oldChk.x; // render approaching chunks and derender irrelevant chunks
           final int dirY = newChk.y-oldChk.y;
@@ -155,16 +159,24 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
   
   public void triggerVictory() {
     gameState = State.VICTORIOUS;
-    System.out.println("You win!");
-    time2Kill = System.currentTimeMillis()+3000; // end the game in 3 seconds
+    System.out.println("You win! There are still other escape pods to be rescued, though.");
+    time2Kill = System.currentTimeMillis()+4000; // end the game in 3 seconds
   }
   
   
   public void triggerDeath() {
-    System.out.println("You lose. I'm a winner see my prize! You're a loser who sits and cries. HAHAHA!");
+    System.out.println("You have died. Better luck next time.");
     gameState = State.DEAD; // death if the ship is gone
-    time2Kill = System.currentTimeMillis()+3000; // end the game in 3 seconds
+    time2Kill = System.currentTimeMillis()+4000; // end the game in 4 seconds
     me.die();
+  }
+  
+  
+  public void triggerWarpDeath() { // a special case scenario where the ship hits the speed of light and loses
+    System.out.println("You have accelerated to the speed of light. You now reach a relativistic limbo from which you may never return. Better luck next time.");
+    gameState = State.DEAD;
+    time2Kill = System.currentTimeMillis()+4000; // end the game in 2 seconds
+    me.warp();
   }
   
   

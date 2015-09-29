@@ -31,7 +31,7 @@ public class EscapePod extends Body { // the goal at the end of each level
   
   
   @Override
-  public final boolean collide() {
+  public final boolean collideWith(Body b) {
     return true;
   }
   

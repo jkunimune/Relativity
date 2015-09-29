@@ -19,7 +19,7 @@ public class Laser extends Body { // a massless collection of photons
   
   
   @Override
-  public final boolean collide() {
+  public final boolean collideWith(Body b) {
     return true;
   }
   

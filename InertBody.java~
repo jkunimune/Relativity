@@ -32,12 +32,12 @@ public class InertBody extends Body { // a body of mass that drifts helplessly t
   
   @Override
   public final boolean collide() {
-    shoot(new Explosion(getX(), getY(), getVX(), getVY(), Math.pow(getM()/10.0, 1/3.0), getUniverse()));
+    shoot(new Explosion(getX(), getY(), Math.pow(getM()/10.0, 1/3.0), getUniverse())); // explodes
     
     if (Math.random()*11 >= getM()) // smaller asteroids are often incinerated on impact
       return true;
     
-    eject(new InertBody(getX(), getY(), Math.log(1/Math.random()-1)/50, Math.random()*2*Math.PI,
+    eject(new InertBody(getX(), getY(), Math.log(1/Math.random()-1)/50, Math.random()*2*Math.PI, // otherwise they throw off pieces
                          Math.log(1/Math.random()-1)/10000, getM()*Math.random()/10, getUniverse()));
     return false;
   }

@@ -35,7 +35,7 @@ public class Explosion extends Body { // a purely asthetic ball of fire
   
   
   @Override
-  public final boolean collide() {
+  public final boolean collideWith(Body b) {
     return false;
   }
   

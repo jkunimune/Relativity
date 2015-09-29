@@ -110,7 +110,7 @@ public abstract class Body { // a class for any physical object
   public abstract double getAY(); // returns the y-component of the acceleration vector
   
   
-  public abstract boolean collide(); // performs a collision and returns whether the object has been destroyed
+  public abstract boolean collideWith(Body b); // performs a collision and returns whether the object has been destroyed
   
   
   public abstract boolean canCollideWith(Body b); // returns whether an object may interact with a given body
@@ -287,8 +287,14 @@ public abstract class Body { // a class for any physical object
     double offset = dest-delTheta;
     offset%=2*Math.PI;
     if (offset < Math.PI && offset >= -Math.PI)
-      aVelocity = .0005*offset;
+      aVelocity = .0006*offset;
     else
-      aVelocity = -.0005*offset;
+      aVelocity = -.0006*offset;
+  }
+  
+  
+  public final void inelasticallyMergeWith(Body that) { // performs an inelastic collision
+    xVelocity = (this.getM()*this.getVX()+that.getM()*that.getVX())/(this.getM()+that.getM());
+    yVelocity = (this.getM()*this.getVY()+that.getM()*that.getVY())/(this.getM()+that.getM());
   }
 }
