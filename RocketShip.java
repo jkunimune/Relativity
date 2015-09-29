@@ -66,8 +66,50 @@ public class RocketShip extends Body { // a body of mass that propels itself bas
   }
   
   
-  public void setTarget(EscapePod pod) {
+  public void setTarget(EscapePod pod) { // forces the ship to dock with the escape pod
     target = pod;
+  }
+  
+  
+  public void yaw() { // rotates the ship to face a certain direction based on throttle
+    switch (xThrottle) {
+      case FORWARD:
+        switch (yThrottle) {
+          case FORWARD:
+            aimToward(Math.PI/4);
+            break;
+          case STALLED:
+            aimToward(0);
+            break;
+          case BACKWARD:
+            aimToward(7*Math.PI/4);
+            break;
+        }
+        break;
+      case STALLED:
+        switch (yThrottle) {
+          case FORWARD:
+            aimToward(Math.PI/2);
+            break;
+          case BACKWARD:
+            aimToward(3*Math.PI/2);
+            break;
+        }
+        break;
+      case BACKWARD:
+        switch (yThrottle) {
+          case FORWARD:
+            aimToward(3*Math.PI/4);
+            break;
+          case STALLED:
+            aimToward(Math.PI);
+            break;
+          case BACKWARD:
+            aimToward(5*Math.PI/4);
+            break;
+        }
+        break;
+    }
   }
   
   
@@ -89,6 +131,7 @@ public class RocketShip extends Body { // a body of mass that propels itself bas
       laserSound.play();
       cooldown += 400;
     }
+    yaw();
     return false;
   }
   

@@ -60,7 +60,7 @@ public abstract class Body { // a class for any physical object
     
     AffineTransform a = new AffineTransform();
     a.scale(Math.cbrt(scale), Math.cbrt(scale));
-    AffineTransformOp o = new AffineTransformOp(a, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+    AffineTransformOp o = new AffineTransformOp(a, AffineTransformOp.TYPE_BILINEAR);
     sprite = o.filter(sprite, null);
   }
   
@@ -220,7 +220,7 @@ public abstract class Body { // a class for any physical object
     transformer.rotate(-theta, sprite.getWidth()/2, sprite.getHeight()/2);
     transformer.scale(1, 1/getG());
     transformer.rotate(theta-delTheta, sprite.getWidth()/2, sprite.getHeight()/2);
-    transOp = new AffineTransformOp(transformer, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+    transOp = new AffineTransformOp(transformer, AffineTransformOp.TYPE_BILINEAR);
     
     try {
       return transOp.filter(sprite, null);
@@ -256,16 +256,6 @@ public abstract class Body { // a class for any physical object
   }
   
   
-  public final int getScreenX() { // just the regular x, but shifted back and space-contracted
-    return (int)((xPosition - universe.getReference().getX() - (sprite.getWidth()>>1)) + (HolographicInterface.WIDTH>>1));
-  }
-  
-  
-  public final int getScreenY() { // ditto for y
-    return (int)((yPosition - universe.getReference().getY() - (sprite.getHeight()>>1))/getG() + (HolographicInterface.HEIGHT>>1));
-  }
-  
-  
   public final double getWidth() {
     return sprite.getWidth();
   }
@@ -282,10 +272,23 @@ public abstract class Body { // a class for any physical object
     final double vXRel = xVelocity - universe.getReference().getVX(); // and for velocity
     final double vYRel = yVelocity - universe.getReference().getVY();
     
-    xRel -= (xRel-yRel*vXRel/vYRel) / getG() / (1+Math.pow(vXRel/vYRel,2)); // length contracts //NOTE TO SELF: This equasion is wrong. Fix it later.
-    yRel -= (xRel-yRel*vXRel/vYRel) / getG() / (1+Math.pow(vXRel/vYRel,2)); // length contracts
+    if (xRel*xRel+yRel*yRel > 0) {
+      xRel = xRel + vXRel*(xRel*vXRel+yRel*vYRel)*(1/getG()-1)/(vXRel*vXRel+vYRel*vYRel); // length contracts
+      yRel = yRel + vYRel*(xRel*vXRel+yRel*vYRel)*(1/getG()-1)/(vXRel*vXRel+vYRel*vYRel); // length contracts
+    }
     
     return new Point((int)(xRel+ (HolographicInterface.WIDTH - sprite.getWidth() >>1)),
                      (int)(yRel+ (HolographicInterface.HEIGHT - sprite.getHeight() >>1)));
+  }
+  
+  
+  /* PRECONDITION: 0 <= dest < TAU */
+  public final void setAngDestination(double dest) { // sets the angular velocity such that it is aimed toward this direction
+    delTheta %= 2*Math.PI;
+    delTheta += 2*Math.PI;
+    if (dest-delTheta >= Math.PI || dest-delTheta < -Math.PI)
+      aVelocity = .0003;
+    else
+      aVelocity = -.0003;
   }
 }
