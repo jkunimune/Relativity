@@ -167,7 +167,7 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
   public void triggerDeath() {
     System.out.println("You have died. Better luck next time.");
     gameState = State.DEAD; // death if the ship is gone
-    time2Kill = System.currentTimeMillis()+4000; // end the game in 4 seconds
+    time2Kill = System.currentTimeMillis()+3000; // end the game in 4 seconds
     me.die();
   }
   
@@ -175,7 +175,7 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
   public void triggerWarpDeath() { // a special case scenario where the ship hits the speed of light and loses
     System.out.println("You have accelerated to the speed of light. You now reach a relativistic limbo from which you may never return. Better luck next time.");
     gameState = State.DEAD;
-    time2Kill = System.currentTimeMillis()+4000; // end the game in 2 seconds
+    time2Kill = System.currentTimeMillis()+2000; // end the game in 2 seconds
     me.warp();
   }
   

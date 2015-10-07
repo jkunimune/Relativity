@@ -17,7 +17,7 @@ public class HolographicInterface { // a class to render and display tactical in
   private final Font serif;
   
   private Space universe;
-  private BufferedImage background;
+  private BufferedImage[] background;
   private BufferedImage progressBar;
   private BufferedImage spedometer;
   private BufferedImage spedometerFrame;
@@ -69,7 +69,14 @@ public class HolographicInterface { // a class to render and display tactical in
     g.setColor(Color.WHITE);
     
     g.clearRect(0, 0, WIDTH, HEIGHT); // Clears the screen
-    g.drawImage(background, 0, 0, null); // Draws the background first and everything else on top of it
+    
+    final Point ship = new Point((int)universe.getReference().getX(), (int)universe.getReference().getY());
+    for (int i = 0; i < background.length; i ++) {
+      g.drawImage(background[i],      -mod(i*ship.x>>3,WIDTH),       -mod(i*ship.y>>3,HEIGHT), null); // Draws the background first and everything else on top of it
+      g.drawImage(background[i], WIDTH-mod(i*ship.x>>3,WIDTH),       -mod(i*ship.y>>3,HEIGHT), null); // Draws 4 so that it can pan continuously
+      g.drawImage(background[i],      -mod(i*ship.x>>3,WIDTH), HEIGHT-mod(i*ship.y>>3,HEIGHT), null);
+      g.drawImage(background[i], WIDTH-mod(i*ship.x>>3,WIDTH), HEIGHT-mod(i*ship.y>>3,HEIGHT), null);
+    }
     
     for (Body b : universe) {
       final Point coord = b.getScreenCoords();
@@ -90,9 +97,22 @@ public class HolographicInterface { // a class to render and display tactical in
   }
   
   
+  private int mod(int x, int y) { // a method I created to be better than %
+    int a = x;
+    while (a >= y)
+      a -= y;
+    while (a < 0)
+      a += y;
+    return a;
+  }
+  
+  
   private void loadImages() {
     try {
-      background = ImageIO.read(new File("textures/space.png"));
+      background = new BufferedImage[4];
+      for (int i = 0; i < background.length; i ++)
+        background[i] = ImageIO.read(new File("textures/background"+i+".png"));
+      
       progressBar = ImageIO.read(new File("textures/progressBar.png"));
       spedometer = ImageIO.read(new File("textures/spedometer.png"));
       spedometerFrame = ImageIO.read(new File("textures/spedometerFrame.png"));
