@@ -8,6 +8,7 @@ public class RocketShip extends Body { // a body of mass that propels itself bas
   public AudioClip[] hitSound; // the sounds of the gaem
   public AudioClip deathSound;
   public AudioClip laserSound;
+  public AudioClip warpSound;
   
   private Throttle xThrottle = Throttle.STALLED;
   private Throttle yThrottle = Throttle.STALLED;
@@ -36,7 +37,7 @@ public class RocketShip extends Body { // a body of mass that propels itself bas
     else if (direction == 'y')
       yThrottle = magnitude;
     else
-      System.out.println("Error: the direction passed to RocketShip.adjustThrottle should be either \'x\' or \'y\'.");
+      System.err.println("Error: the direction passed to RocketShip.adjustThrottle should be either \'x\' or \'y\'.");
   }
   
   
@@ -63,6 +64,11 @@ public class RocketShip extends Body { // a body of mass that propels itself bas
   public void die() {
     shoot(new Explosion(getX(), getY(), Math.pow(getM()/10.0, 1/3.0), getUniverse()));
     deathSound.play();
+  }
+  
+  
+  public void warp() { // plays the sound corresponding to the ship attaining the speed of light
+    warpSound.play();
   }
   
   
@@ -114,7 +120,8 @@ public class RocketShip extends Body { // a body of mass that propels itself bas
   
   
   @Override
-  public final boolean collide() {
+  public final boolean collideWith(Body b) {
+    inelasticallyMergeWith(b); // ships actually get bogged down by collision
     hitPoints = (int)(hitPoints + Math.random()*2.5 - 3);
     hitSound[(int)(Math.random()*hitSound.length)].play();
     return hitPoints <= 0;
@@ -213,6 +220,7 @@ public class RocketShip extends Body { // a body of mass that propels itself bas
         hitSound[i] = Applet.newAudioClip(new java.net.URL("File:sounds/hit"+(i%3)+".wav"));
       deathSound = Applet.newAudioClip(new java.net.URL("File:sounds/shipDeath.wav"));
       laserSound = Applet.newAudioClip(new java.net.URL("File:sounds/laser.wav"));
+      warpSound = Applet.newAudioClip(new java.net.URL("File:sounds/warp.wav"));
     }
     catch (java.net.MalformedURLException error) {
       System.err.println(error);

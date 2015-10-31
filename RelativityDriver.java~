@@ -14,25 +14,42 @@ public final class RelativityDriver {
     } while (universe.update(System.currentTimeMillis()-time));
     
     System.out.println("Your score is "+universe.getScore());
-    saveScore("Bob", universe.getScore());
-  }
-  
-  
-  public static void saveScore(String name, int score) {
-    String[] scores = getScores();
+    
     try {
-      BufferedWriter writer = new BufferedWriter(new FileWriter("data/hiScores.txt"));
-      writer.write(name+": "+score);
-      writer.newLine();
-      writer.close();
-    }
-    catch (IOException e) {
-      System.err.println("HEY, did someone move hiScores?");
+      if (saveScore("Bob", universe.getScore()))
+        System.out.println("That's a new record!"); // tells you if you beat the high score
+    } catch (IOException e) {
+      System.err.println("This computer's going to explode in 5 seconds! Run!\n\n\nJK, you just did something funny to the game files.");
     }
   }
   
   
-  public static String[] getScores() {
+  public static boolean saveScore(String name, int newScore) throws IOException { //returns true if there is a new high score
+    String[] scores = getScores();
+    
+    for (int i = 0; i < scores.length; i ++) { // cycles through scores best to worst
+      if (Integer.parseInt(scores[i].substring(scores[i].indexOf("0"))) < newScore) { // and saves once your score is better (if you didn't beat any of the hiscores, it ends)
+        BufferedWriter writer = new BufferedWriter(new FileWriter("data/hiScores.txt"));
+        
+        for (int k = 0; k < i; k ++) {
+          writer.write(scores[k]);
+          writer.newLine();
+        }
+        writer.write(name+"0"+newScore);
+        writer.newLine();
+        for (int k = i; k < scores.length; k ++) {
+          writer.write(scores[k]);
+          writer.newLine();
+        }
+        writer.close();
+        return i == 0;
+      }
+    }
+    return false;
+  }
+  
+  
+  public static String[] getScores() throws IOException {
     try {
       String[] scoreList = new String[10];
       BufferedReader reader = new BufferedReader(new FileReader("data/hiScores.txt"));
