@@ -80,7 +80,7 @@ public class HolographicInterface { // a class to render and display tactical in
     
     for (Body b : universe) {
       final Point coord = b.getScreenCoords();
-      g.drawImage(b.getSprite(), coord.x, coord.y, null); // Draws all of the enemies currently alive.
+      g.drawImage(b.getSprite(), coord.x, coord.y, null); // Draws all of the things
     }
     
     final double speedPerC = universe.getReference().getV()/Space.C; // the speed of the ship in % of lightspeed

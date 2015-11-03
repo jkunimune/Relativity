@@ -9,7 +9,7 @@ import javax.swing.*;
 public class Space extends ArrayList<Body> { // a class that contains all the physical information of the universe
   public static final double m = .000005; // pixels
   public static final double s = 1000; // miliseconds
-  public static final double C = 300000000*m/s; // the speed of light to a stationary observer
+  public static final double C = 300000000*m/s; // the speed of light in a vacuum
   public static final double G = 1.0; // Newton's universal gravitation constant
   public static final int RENDER_DISTANCE = 1000; // the size of the square in which space debris is rendered
   
@@ -25,12 +25,12 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
   
   
   
-  public Space(int dif) {
+  public Space(int dif, int lives) { // spawns a space with diffuculty determined by dif
     me = new RocketShip(0, RENDER_DISTANCE>>1, this);
     this.add(me);
-    remainingLives = 3;
+    remainingLives = lives;
     difficulty = Math.pow(Math.E,dif/3.0);
-    destination = 5000*difficulty;
+    destination = 3000*difficulty;
     timeCreated = System.currentTimeMillis();
     time2Kill = 0;
     timeWon = 0;
@@ -40,6 +40,19 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
       for (int k = -1; k <= 1; k ++)
         if (j!=0 || k!=0)
           render(j,k);
+  }
+  
+  
+  public Space() { // spawns a space to act as the background for the menu
+    me = new RocketShip(0, RENDER_DISTANCE>>1, this);
+    remainingLives = 0;
+    difficulty = 1;
+    destination = 0;
+    timeCreated = System.currentTimeMillis();
+    time2Kill = 0;
+    timeWon = 0;
+    gameState = State.DISPLAY;
+    render(0,0);
   }
   
   
@@ -120,7 +133,7 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
   
   
   private void render(int x, int y) { // generates an area and fills it with objects
-    for (int i = 0; i < (RENDER_DISTANCE*RENDER_DISTANCE>>17)*difficulty; i ++)
+    for (int i = 0; i < (RENDER_DISTANCE*RENDER_DISTANCE>>18)*difficulty; i ++)
       if (Math.random() < .5)
         this.add(new InertBody((x+Math.random())*RENDER_DISTANCE, (y+Math.random())*RENDER_DISTANCE, randomSpeed(),
                                Math.random()*2*Math.PI, Math.log(1/Math.random()-1)/10000, Math.random(),
@@ -197,8 +210,8 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
   
   
   public int getScore() { // returns the player's current score
-    if (gameState == State.VICTORIOUS)  return (int)(difficulty*difficulty*difficulty*destination*destination/(timeWon-timeCreated));
-    else      return (int)(difficulty*difficulty*difficulty*me.getX()*destination/(timeWon-timeCreated)/Math.E);
+    if (gameState == State.VICTORIOUS)  return (int)(difficulty*difficulty*difficulty*destination*destination/(timeWon-timeCreated)/100);
+    else                                return (int)(difficulty*difficulty*difficulty*me.getX()*destination/(timeWon-timeCreated)/Math.E/100);
   }
   
   
@@ -213,6 +226,6 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
   
   
   public double randomSpeed() { // gets a random speed for new asteroids based on difficulty
-    return Math.log(1/Math.random()-1)/50*difficulty;
+    return Math.log(1/Math.random()-1)/30*difficulty;
   }
 }

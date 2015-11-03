@@ -8,11 +8,11 @@ public final class RelativityDriver {
     AudioClip tunes = Applet.newAudioClip(new java.net.URL("File:sounds/soundtrack.wav"));
     tunes.loop(); // the soundtrack
     
-    Space universe = new Space(0);
+    Space universe = new Space(0,3);
     HolographicInterface screen = new HolographicInterface(universe);
     long time;
     
-    while (true) {
+    while (universe.extraLives() >= 0) { // terminates when you run out of lives
       do {
         time = System.currentTimeMillis();
         screen.display();
@@ -28,11 +28,13 @@ public final class RelativityDriver {
       }
       
       if (universe.won())
-        universe = new Space(universe.getDif()+1);
+        universe = new Space(universe.getDif()+1,3);
       else
-        universe = new Space(universe.getDif());
+        universe = new Space(universe.getDif(),universe.extraLives());
       screen.setSpace(universe);
     }
+    
+    System.out.println("You have run out of ships. I guess all those stranded escape pods will just have to wait...");
   }
   
   
