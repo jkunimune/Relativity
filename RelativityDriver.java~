@@ -1,9 +1,13 @@
 import java.io.*;
+import java.applet.*;
 
 
 
 public final class RelativityDriver {
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
+    AudioClip tunes = Applet.newAudioClip(new java.net.URL("File:sounds/soundtrack.wav"));
+    tunes.loop(); // the soundtrack
+    
     Space universe = new Space();
     HolographicInterface screen = new HolographicInterface(universe);
     long time;

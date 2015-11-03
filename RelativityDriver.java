@@ -8,22 +8,30 @@ public final class RelativityDriver {
     AudioClip tunes = Applet.newAudioClip(new java.net.URL("File:sounds/soundtrack.wav"));
     tunes.loop(); // the soundtrack
     
-    Space universe = new Space();
+    Space universe = new Space(0);
     HolographicInterface screen = new HolographicInterface(universe);
     long time;
     
-    do {
-      time = System.currentTimeMillis();
-      screen.display();
-    } while (universe.update(System.currentTimeMillis()-time));
-    
-    System.out.println("Your score is "+universe.getScore());
-    
-    try {
-      if (saveScore("Bob", universe.getScore()))
-        System.out.println("That's a new record!"); // tells you if you beat the high score
-    } catch (IOException e) {
-      System.err.println("This computer's going to explode in 5 seconds! Run!\n\n\nJK, you just did something funny to the game files.");
+    while (true) {
+      do {
+        time = System.currentTimeMillis();
+        screen.display();
+      } while (universe.update(System.currentTimeMillis()-time));
+      
+      System.out.println("Your score is "+universe.getScore());
+      
+      try {
+        if (saveScore("Bob", universe.getScore()))
+          System.out.println("That's a new record!"); // tells you if you beat the high score
+      } catch (IOException e) {
+        System.err.println("This computer's going to explode in 5 seconds! Run!\n\n\nJK, you just did something funny to the game files.");
+      }
+      
+      if (universe.won())
+        universe = new Space(universe.getDif()+1);
+      else
+        universe = new Space(universe.getDif());
+      screen.setSpace(universe);
     }
   }
   

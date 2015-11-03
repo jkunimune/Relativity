@@ -155,9 +155,9 @@ public class RocketShip extends Body { // a body of mass that propels itself bas
       case RUNNING:
         switch (xThrottle) {
           case FORWARD:
-            return .0003; // the ship engine power
+            return .0004; // the ship engine power
           case BACKWARD:
-            return -.0003;
+            return -.0004;
           default:
             return 0;
         }
@@ -181,9 +181,9 @@ public class RocketShip extends Body { // a body of mass that propels itself bas
       case RUNNING:
         switch (yThrottle) {
           case FORWARD:
-            return -.0003; // the ship engine power
+            return -.0004; // the ship engine power
           case BACKWARD:
-            return .0003;
+            return .0004;
           default:
             return 0;
         }

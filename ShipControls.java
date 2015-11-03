@@ -55,4 +55,9 @@ public class ShipControls implements MouseListener, KeyListener {
   
   
   public final void keyTyped(KeyEvent e) {}
+  
+  
+  public final void setSpace(Space spaaaaace) {
+    space = spaaaaace;
+  }
 }

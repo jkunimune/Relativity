@@ -21,7 +21,7 @@ public class RocketShip extends Body { // a body of mass that propels itself bas
   
   
   public RocketShip(double startX, double startY, Space s) {
-    super(startX, startY, 0, 0, 0, 60, s);
+    super(startX, startY, 0, 0, 0, 75, s);
     firing = false;
     cooldown = 0;
     hitPoints = 16;

@@ -18,6 +18,7 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
   private double destination; // the distance the ship must travel to complete the level
   private long timeCreated; // the time the universe was created
   private long time2Kill; // the time the universe will be terminated
+  private long timeWon; // the time you won (0 if you haven't yet)
   public State gameState; // whether the game is running or what
   
   
@@ -30,6 +31,7 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
     destination = 5000;
     timeCreated = System.currentTimeMillis();
     time2Kill = 0;
+    timeWon = 0;
     gameState = State.RUNNING;
     
     for (int j = 0; j <= 1; j ++)
@@ -148,7 +150,11 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
   
   
   public String getTime() {
-    String output = String.valueOf((System.currentTimeMillis()-timeCreated)/1000.0); // returns the age of this level in seconds, in String form
+    String output;
+    if (gameState == State.RUNNING)
+      output = String.valueOf((System.currentTimeMillis()-timeCreated)/1000.0); // returns the age of this level in seconds, in String form
+    else
+      output = String.valueOf((timeWon-timeCreated)/1000.0);
     while (output.indexOf(".") < 3)
       output = "0" + output;
     while (output.length() < 7)
@@ -161,6 +167,7 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
     gameState = State.VICTORIOUS;
     System.out.println("You win! There are still other escape pods to be rescued, though.");
     time2Kill = System.currentTimeMillis()+4000; // end the game in 3 seconds
+    timeWon = System.currentTimeMillis();
   }
   
   
@@ -168,6 +175,7 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
     System.out.println("You have died. Better luck next time.");
     gameState = State.DEAD; // death if the ship is gone
     time2Kill = System.currentTimeMillis()+3000; // end the game in 4 seconds
+    timeWon = System.currentTimeMillis();
     me.die();
   }
   
@@ -176,6 +184,7 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
     System.out.println("You have accelerated to the speed of light. You now reach a relativistic limbo from which you may never return. Better luck next time.");
     gameState = State.DEAD;
     time2Kill = System.currentTimeMillis()+2000; // end the game in 2 seconds
+    timeWon = System.currentTimeMillis();
     me.warp();
   }
   
@@ -186,7 +195,7 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
   
   
   public int getScore() { // returns the player's current score
-    if (gameState == State.VICTORIOUS)  return (int)(destination*destination/(System.currentTimeMillis()-timeCreated));
-    else      return (int)(me.getX()*destination/(System.currentTimeMillis()-timeCreated)/2);
+    if (gameState == State.VICTORIOUS)  return (int)(destination*destination/(timeWon-timeCreated));
+    else      return (int)(me.getX()*destination/(timeWon-timeCreated)/Math.E);
   }
 }

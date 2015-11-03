@@ -15,6 +15,7 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
   
   private RocketShip me; // the ship
   private int remainingLives; // the number of lives remaining. When this reaches 0, the game is over.
+  private double difficulty; // this number is the factor that affects asteroid rate, speed, and destination distance
   private double destination; // the distance the ship must travel to complete the level
   private long timeCreated; // the time the universe was created
   private long time2Kill; // the time the universe will be terminated
@@ -24,11 +25,12 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
   
   
   
-  public Space() {
+  public Space(int dif) {
     me = new RocketShip(0, RENDER_DISTANCE>>1, this);
     this.add(me);
     remainingLives = 3;
-    destination = 5000;
+    difficulty = Math.pow(Math.E,dif/3.0);
+    destination = 5000*difficulty;
     timeCreated = System.currentTimeMillis();
     time2Kill = 0;
     timeWon = 0;
@@ -118,9 +120,9 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
   
   
   private void render(int x, int y) { // generates an area and fills it with objects
-    for (int i = 0; i < RENDER_DISTANCE*RENDER_DISTANCE>>16; i ++)
+    for (int i = 0; i < (RENDER_DISTANCE*RENDER_DISTANCE>>17)*difficulty; i ++)
       if (Math.random() < .5)
-        this.add(new InertBody((x+Math.random())*RENDER_DISTANCE, (y+Math.random())*RENDER_DISTANCE, Math.log(1/Math.random()-1)/50,
+        this.add(new InertBody((x+Math.random())*RENDER_DISTANCE, (y+Math.random())*RENDER_DISTANCE, randomSpeed(),
                                Math.random()*2*Math.PI, Math.log(1/Math.random()-1)/10000, Math.random(),
                                this));
   }
@@ -195,7 +197,22 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
   
   
   public int getScore() { // returns the player's current score
-    if (gameState == State.VICTORIOUS)  return (int)(destination*destination/(timeWon-timeCreated));
-    else      return (int)(me.getX()*destination/(timeWon-timeCreated)/Math.E);
+    if (gameState == State.VICTORIOUS)  return (int)(difficulty*difficulty*difficulty*destination*destination/(timeWon-timeCreated));
+    else      return (int)(difficulty*difficulty*difficulty*me.getX()*destination/(timeWon-timeCreated)/Math.E);
+  }
+  
+  
+  public int getDif() { // returns the difficulty input
+    return (int)(Math.log(difficulty)*3);
+  }
+  
+  
+  public boolean won() {
+    return gameState == State.VICTORIOUS;
+  }
+  
+  
+  public double randomSpeed() { // gets a random speed for new asteroids based on difficulty
+    return Math.log(1/Math.random()-1)/50*difficulty;
   }
 }

@@ -72,10 +72,10 @@ public class HolographicInterface { // a class to render and display tactical in
     
     final Point ship = new Point((int)universe.getReference().getX(), (int)universe.getReference().getY());
     for (int i = 0; i < background.length; i ++) {
-      g.drawImage(background[i],      -(i*ship.x>>3)%WIDTH,       -(i*ship.y>>3)%HEIGHT, null); // Draws the background first and everything else on top of it
-      g.drawImage(background[i], WIDTH-(i*ship.x>>3)%WIDTH,       -(i*ship.y>>3)%HEIGHT, null); // Draws 4 so that it can pan continuously
-      g.drawImage(background[i],      -(i*ship.x>>3)%WIDTH, HEIGHT-(i*ship.y>>3)%HEIGHT, null);
-      g.drawImage(background[i], WIDTH-(i*ship.x>>3)%WIDTH, HEIGHT-(i*ship.y>>3)%HEIGHT, null);
+      g.drawImage(background[i],      -mod(i*ship.x>>3,WIDTH),       -mod(i*ship.y>>3,HEIGHT), null); // Draws the background first and everything else on top of it
+      g.drawImage(background[i], WIDTH-mod(i*ship.x>>3,WIDTH),       -mod(i*ship.y>>3,HEIGHT), null); // Draws 4 so that it can pan continuously
+      g.drawImage(background[i],      -mod(i*ship.x>>3,WIDTH), HEIGHT-mod(i*ship.y>>3,HEIGHT), null);
+      g.drawImage(background[i], WIDTH-mod(i*ship.x>>3,WIDTH), HEIGHT-mod(i*ship.y>>3,HEIGHT), null);
     }
     
     for (Body b : universe) {
@@ -94,6 +94,16 @@ public class HolographicInterface { // a class to render and display tactical in
     
     g.dispose();
     strat.show(); // Shows the screen.
+  }
+  
+  
+  private int mod(int x, int y) { // a method I created to be better than %
+    int a = x;
+    while (a >= y)
+      a -= y;
+    while (a < 0)
+      a += y;
+    return a;
   }
   
   

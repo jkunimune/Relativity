@@ -107,6 +107,14 @@ public class HolographicInterface { // a class to render and display tactical in
   }
   
   
+  public void setSpace(Space spaaaaace) {
+    universe = spaaaaace;
+    final ShipControls listener = new ShipControls(spaaaaace, spaaaaace.getReference());
+    canvs.addKeyListener(listener);
+    canvs.addMouseListener(listener);
+  }
+  
+  
   private void loadImages() {
     try {
       background = new BufferedImage[4];
