@@ -130,15 +130,17 @@ public class RocketShip extends Body { // a body of mass that propels itself bas
   
   @Override
   public boolean update(double delT) {
-    super.update(delT);
-    if (cooldown > 0)
-      cooldown -= delT;
-    else if (firing) {
-      shoot(new Laser(this.getX(), this.getY(), getAngle(), this.getUniverse()));
-      laserSound.play();
-      cooldown += 400;
+    if (getUniverse().gameState == State.RUNNING) {
+      super.update(delT);
+      if (cooldown > 0)
+        cooldown -= delT;
+      else if (firing) {
+        shoot(new Laser(this.getX(), this.getY(), getAngle(), this.getUniverse()));
+        laserSound.play();
+        cooldown += 400;
+      }
+      yaw();
     }
-    yaw();
     return false;
   }
   
@@ -155,9 +157,9 @@ public class RocketShip extends Body { // a body of mass that propels itself bas
       case RUNNING:
         switch (xThrottle) {
           case FORWARD:
-            return .0003; // the ship engine power
+            return .0004; // the ship engine power
           case BACKWARD:
-            return -.0003;
+            return -.0004;
           default:
             return 0;
         }
@@ -181,9 +183,9 @@ public class RocketShip extends Body { // a body of mass that propels itself bas
       case RUNNING:
         switch (yThrottle) {
           case FORWARD:
-            return -.0003; // the ship engine power
+            return -.0004; // the ship engine power
           case BACKWARD:
-            return .0003;
+            return .0004;
           default:
             return 0;
         }

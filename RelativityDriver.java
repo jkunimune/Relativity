@@ -5,12 +5,20 @@ import java.applet.*;
 
 public final class RelativityDriver {
   public static void main(String[] args) throws IOException {
+    Space universe = new Space();
+    HolographicInterface screen = new HolographicInterface(universe);
+    long time;
+    while (universe.gameState == State.DISPLAY) {
+      time = System.currentTimeMillis();
+      screen.display();
+      universe.update(System.currentTimeMillis()-time);
+    }
+    
     AudioClip tunes = Applet.newAudioClip(new java.net.URL("File:sounds/soundtrack.wav"));
     tunes.loop(); // the soundtrack
     
-    Space universe = new Space(0,3);
-    HolographicInterface screen = new HolographicInterface(universe);
-    long time;
+    universe = new Space(0,3);
+    screen.setSpace(universe);
     
     while (universe.extraLives() >= 0) { // terminates when you run out of lives
       do {

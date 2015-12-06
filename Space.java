@@ -44,15 +44,19 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
   
   
   public Space() { // spawns a space to act as the background for the menu
-    me = new RocketShip(0, RENDER_DISTANCE>>1, this);
-    remainingLives = 0;
-    difficulty = 1;
+    me = new RocketShip(0, 0, this);
+    remainingLives = 3;
+    difficulty = Math.sqrt(Math.E);
     destination = 0;
     timeCreated = System.currentTimeMillis();
     time2Kill = 0;
     timeWon = 0;
     gameState = State.DISPLAY;
-    render(0,0);
+    
+    for (int j = -2; j < 2; j ++)
+      for (int k = -2; k < 2; k ++)
+        render(j,k);
+    add(new EscapePod(0, 0, this));
   }
   
   
@@ -60,35 +64,36 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
   
   public boolean update(double delT) { // returns true when the game is in progress
     procedurallyGenerate(delT);
-    
     for (int i = this.size()-1; i > 1; i --)
       if (get(i).update(delT/get(i).getG()*get(i).getD()))
         remove(i);
     
-    for (int i = 0; i < this.size()-1; i ++) {
-      for (int h = i+1; h < this.size(); h ++) {
-        if (Math.hypot(get(i).getX()-get(h).getX(),get(i).getY() - get(h).getY()) < (get(i).getWidth()+get(h).getWidth())/2) {
-          if (get(i).canCollideWith(get(h))) { // only collide if the combination is right (e.g. asteroids don't hit asteroisd because that would destroy the universe in a big ball of lag)
-            final Body a = get(i);
-            final Body b = get(h);
-            if (a.collideWith(b)) {
-              remove(i);
-              h --;
-            }
-            if (b.collideWith(a)) {
-              remove(h);
+    if (gameState == State.RUNNING) { // collisions and game endings
+      for (int i = 0; i < this.size()-1; i ++) {
+        for (int h = i+1; h < this.size(); h ++) {
+          if (Math.hypot(get(i).getX()-get(h).getX(),get(i).getY() - get(h).getY()) < (get(i).getWidth()+get(h).getWidth())/2) {
+            if (get(i).canCollideWith(get(h))) { // only collide if the combination is right (e.g. asteroids don't hit asteroisd because that would destroy the universe in a big ball of lag)
+              final Body a = get(i);
+              final Body b = get(h);
+              if (a.collideWith(b)) {
+                remove(i);
+                h --;
+              }
+              if (b.collideWith(a)) {
+                remove(h);
+              }
             }
           }
         }
       }
+      
+      if (me.getV() > C) // you are lost at the speed of light
+        triggerWarpDeath();
+      if (!this.contains(me)) // you are dead without a ship
+        triggerDeath();
     }
     
-    if (gameState == State.RUNNING && me.getV() > C) // you are lost at the speed of light
-      triggerWarpDeath();
-    if (gameState == State.RUNNING && !this.contains(me)) // you are dead without a ship
-      triggerDeath();
-    
-    return gameState == State.RUNNING || System.currentTimeMillis() < time2Kill; // the game is still active when the state is running or we are in the ending animation
+    return gameState == State.RUNNING || gameState == State.DISPLAY || System.currentTimeMillis() < time2Kill; // the game is still active when the state is running or we are in the ending animation
   }
   
   
@@ -98,7 +103,7 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
     final Point newChk = new Point((int)Math.floor(me.getX()/RENDER_DISTANCE), (int)Math.floor(me.getY()/RENDER_DISTANCE));
     
     if (newChk.x != oldChk.x) {
-      if (me.getX() < destination || newChk.x%3>0) {
+      if (me.getX() < destination || newChk.x%2>0 || gameState == State.DISPLAY) {
         if (newChk.y != oldChk.y) { // if the player is diagonally in a new chunk
           final int dirX = newChk.x-oldChk.x; // render approaching chunks and derender irrelevant chunks
           final int dirY = newChk.y-oldChk.y;

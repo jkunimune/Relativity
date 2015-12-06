@@ -131,14 +131,16 @@ public class RocketShip extends Body { // a body of mass that propels itself bas
   @Override
   public boolean update(double delT) {
     super.update(delT);
-    if (cooldown > 0)
-      cooldown -= delT;
-    else if (firing) {
-      shoot(new Laser(this.getX(), this.getY(), getAngle(), this.getUniverse()));
-      laserSound.play();
-      cooldown += 400;
+    if (getUniverse().gameState == State.RUNNING) { // shoots lasers if the game is running
+      if (cooldown > 0)
+        cooldown -= delT;
+      else if (firing) {
+        shoot(new Laser(this.getX(), this.getY(), getAngle(), this.getUniverse()));
+        laserSound.play();
+        cooldown += 400;
+      }
+      yaw();
     }
-    yaw();
     return false;
   }
   
