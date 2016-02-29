@@ -97,6 +97,8 @@ public class RocketShip extends Body { // a body of mass that propels itself bas
           case FORWARD:
             aimToward(Math.PI/2);
             break;
+          case STALLED: // if no throttle, coast
+        	break;
           case BACKWARD:
             aimToward(3*Math.PI/2);
             break;
@@ -130,8 +132,8 @@ public class RocketShip extends Body { // a body of mass that propels itself bas
   
   @Override
   public boolean update(double delT) {
-    if (getUniverse().gameState == State.RUNNING) {
-      super.update(delT);
+    super.update(delT);
+    if (getUniverse().gameState == State.RUNNING) { // shoots lasers if the game is running
       if (cooldown > 0)
         cooldown -= delT;
       else if (firing) {

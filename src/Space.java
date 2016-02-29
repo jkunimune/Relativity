@@ -1,14 +1,14 @@
 import java.awt.*;
-import java.awt.image.*;
 import java.util.*;
-import javax.swing.*;
 
 
 
 
 public class Space extends ArrayList<Body> { // a class that contains all the physical information of the universe
+  public static final long serialVersionUID = 0;
+
   public static final double m = .000005; // pixels
-  public static final double s = 1000; // miliseconds
+  public static final double s = 1000; // Milliseconds
   public static final double C = 300000000*m/s; // the speed of light in a vacuum
   public static final double G = 1.0; // Newton's universal gravitation constant
   public static final int RENDER_DISTANCE = 1000; // the size of the square in which space debris is rendered
@@ -25,7 +25,7 @@ public class Space extends ArrayList<Body> { // a class that contains all the ph
   
   
   
-  public Space(int dif, int lives) { // spawns a space with diffuculty determined by dif
+  public Space(int dif, int lives) { // spawns a space with difficulty determined by dif
     me = new RocketShip(0, RENDER_DISTANCE>>1, this);
     this.add(me);
     remainingLives = lives;

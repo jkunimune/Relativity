@@ -5,13 +5,11 @@ import java.awt.event.*;
 
 public class ShipControls implements MouseListener, KeyListener {
   private RocketShip ship;
-  private Space space;
   
   
   
   
   public ShipControls (Space newSpace, RocketShip newShip) {
-    space = newSpace;
     ship = newShip;
   }
   
@@ -55,9 +53,4 @@ public class ShipControls implements MouseListener, KeyListener {
   
   
   public final void keyTyped(KeyEvent e) {}
-  
-  
-  public final void setSpace(Space spaaaaace) {
-    space = spaaaaace;
-  }
 }

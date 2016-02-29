@@ -141,6 +141,8 @@ public class HolographicInterface implements ActionListener { // a class to rend
         g.drawImage(healthBar[universe.getReference().getHP()], 20, 20, null);
         g.drawImage(cooldownBar[universe.getReference().laserCharge()], 20, 20, null);
         g.drawString(universe.getTime(), WIDTH-170, 60);
+      case DONE:
+    	break;
     }
     
     g.dispose();
