@@ -147,7 +147,7 @@ public class RocketShip extends Body { // a body of mass that propels itself bas
   }
   
   
-  public final double getAngle() { // gets the angle of the mouse in radians
+  public final static double getAngle() { // gets the angle of the mouse in radians
     return Math.atan2(MouseInfo.getPointerInfo().getLocation().getY()-HolographicInterface.HEIGHT/2,
                       MouseInfo.getPointerInfo().getLocation().getX()-HolographicInterface.WIDTH/2);
   }

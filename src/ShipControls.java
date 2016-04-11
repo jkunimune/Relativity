@@ -1,22 +1,34 @@
 import java.awt.event.*;
 
+import javax.swing.JFrame;
+
 
 
 
 public class ShipControls implements MouseListener, KeyListener {
+  private Space universe;
   private RocketShip ship;
+  private JFrame frame;
   
   
   
   
-  public ShipControls (Space newSpace, RocketShip newShip) {
-    ship = newShip;
+  public ShipControls (Space newSpace, JFrame newFrame) {
+    universe = newSpace;
+    ship = newSpace.getReference();
+    frame = newFrame;
   }
   
   
   
   
   public final void mousePressed(MouseEvent e) {
+    if (universe.gameState == State.DISPLAY) {
+      if (Math.hypot(e.getX() - HolographicInterface.WIDTH/2, e.getY() - HolographicInterface.HEIGHT/2 + 200) < 100)
+        universe.gameState = State.VICTORIOUS;										// start
+      else if (Math.hypot(e.getX() - HolographicInterface.WIDTH/2, e.getY() - HolographicInterface.HEIGHT/2 - 200) < 100)
+        frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));	// exit
+    }
     ship.firing = true;
   }
   

@@ -284,12 +284,11 @@ public abstract class Body { // a class for any physical object
   
   /* PRECONDITION: 0 <= dest < TAU or dest == NaN */
   public final void aimToward(double dest) { // sets the angular velocity such that it is aimed toward this direction
-    double offset = dest-delTheta;
-    offset%=2*Math.PI;
-    if (offset < Math.PI && offset >= -Math.PI)
-      aVelocity = .0006*offset;
+    double offset = (dest - delTheta + 2*Math.PI)%(2*Math.PI);
+    if (offset < Math.PI)
+      aVelocity = .001*offset;
     else
-      aVelocity = -.0006*offset;
+      aVelocity = .001*(offset-2*Math.PI);
   }
   
   

@@ -1,6 +1,5 @@
 import java.awt.*;
 import java.awt.image.*;
-import java.awt.event.*;
 import java.io.*;
 import javax.swing.*;
 import javax.imageio.*;
@@ -8,7 +7,7 @@ import javax.imageio.*;
 
 
 
-public class HolographicInterface implements ActionListener { // a class to render and display tactical information (overhead view)
+public class HolographicInterface { // a class to render and display tactical information (overhead view)
   public static final int WIDTH = 1280;
   public static final int HEIGHT = 800;
   private JFrame frame;
@@ -37,50 +36,15 @@ public class HolographicInterface implements ActionListener { // a class to rend
     canvs = new Canvas();
     serif = new Font("Serif", Font.ITALIC | Font.BOLD, 40);
     
-    if (universe.gameState != State.DISPLAY) { // enables the spaceship
-      final ShipControls listener = new ShipControls(wholeNewUniverse, wholeNewUniverse.getReference());
-      canvs.addKeyListener(listener);
-      canvs.addMouseListener(listener);
-    }    
-    else { // adds buttons
-      JButton b1 = new JButton();
-      b1.setHorizontalTextPosition(AbstractButton.CENTER);
-      b1.setMnemonic(KeyEvent.VK_S);
-      b1.setToolTipText("Begin the adventure!");
-      b1.setActionCommand("START");
-      b1.addActionListener(this);
-      panel.add(b1);
-      
-      JButton b2 = new JButton();
-      b2.setHorizontalTextPosition(AbstractButton.CENTER);
-      b2.setMnemonic(KeyEvent.VK_E);
-      b2.setToolTipText("Close the game.");
-      b2.setActionCommand("EXIT");
-      b2.addActionListener(this);
-      panel.add(b2);
-      
-      JButton b3 = new JButton();
-      b3.setHorizontalTextPosition(AbstractButton.CENTER);
-      b3.setMnemonic(KeyEvent.VK_R);
-      b3.setToolTipText("Look at the high-scores!");
-      b3.setActionCommand("SCORES");
-      b3.addActionListener(this);
-      panel.add(b3);
-      
-      JButton b4 = new JButton();
-      b4.setHorizontalTextPosition(AbstractButton.CENTER);
-      b4.setMnemonic(KeyEvent.VK_H);
-      b4.setToolTipText("Learn how to play!");
-      b4.setActionCommand("HELP");
-      b4.addActionListener(this);
-      panel.add(b4);
-    }
+    final ShipControls listener = new ShipControls(universe, frame);
+    canvs.addKeyListener(listener);
+    canvs.addMouseListener(listener);
     
     panel.setLayout(null);
     
     canvs.setBounds(0, 0, WIDTH, HEIGHT);
     canvs.setIgnoreRepaint(true);
-    canvs.setFocusable(true); // Sets the canvas to focussable (Necessary for a key listener).
+    canvs.setFocusable(true); // Sets the canvas to focusable (Necessary for a key listener).
     
     panel.add(canvs);
     panel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
@@ -162,21 +126,9 @@ public class HolographicInterface implements ActionListener { // a class to rend
   
   public void setSpace(Space spaaaaace) {
     universe = spaaaaace;
-    final ShipControls listener = new ShipControls(spaaaaace, spaaaaace.getReference());
+    final ShipControls listener = new ShipControls(spaaaaace, frame);
     canvs.addKeyListener(listener);
     canvs.addMouseListener(listener);
-  }
-  
-  
-  public void actionPerformed(ActionEvent e) {
-    if (e.getActionCommand().equals("START"))
-      universe.gameState = State.VICTORIOUS;
-    else if (e.getActionCommand().equals("EXIT"))
-      frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
-    else if (e.getActionCommand().equals("SCORES"))
-      System.out.println("The Scores button doesn't work yet.");
-    else if (e.getActionCommand().equals("HELP"))
-      System.out.println("The Help button doesn't work yet.");
   }
   
   
